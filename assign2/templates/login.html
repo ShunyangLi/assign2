@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<header class="masthead" style="background-image: url('{{ url_for('static', filename = 'asb-unsw-campus-15.jpg') }}')">
+    </br>
+    </br>
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <form action="{{ url_for('login') }}" class="sentMessage" method="post">
+                        <div class="control-group">
+                            <div class="form-group ">
+                                <label style="float:left">ZID</label>
+                                <input type="text " class="form-control" placeholder="zid" name = "zid" required data-validation-required-message="Please enter your zid.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        </br>
+                        </br>
+                        <div class="control-group">
+                            <div class="form-group">
+                                <label style="float:left" >PASSWORD</label>
+                                <input type="text" class="form-control" placeholder="password" name = "password" required data-validation-required-message="Please enter your password.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" id="sendMessageButton">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </br>
+    </br>
+    </br>
+    </br>
+    </br>
+    </br>
+    </br>
+    </br>
+</header>
+
+{% endblock %}
+
+

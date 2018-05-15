@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block body %}
+<header class="masthead" style="background-image: url('{{ url_for('static',filename='unsw.jpg')}}')">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h1>Event Management System</h1>
+                    <span class="subheading">UNSW Event Management System</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!--Main Content-->
+{% endblock %}

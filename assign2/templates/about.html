@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block body %}
+<header class="masthead" style="background-image: url('{{ url_for('static', filename = 'UNSW_0.png') }}')">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="page-heading">
+                    <h1>Event Management System</h1>
+                    <span class="subheading">Details about EMS</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <p>
+                The EMS is only accessible by members (staff and students) of UNSW. Users should be able to log into the
+                system with their zID and password.
+            </p>
+            
+            <p>The events organised in the university can be grouped broadly into two categories namely courses and
+                seminars. Each event is scheduled at a particular venue and can run for a single day or over a period of
+                days. Each event has a maximum attendee capacity. Each scheduled event has a de-register window period
+                up and until which a registered attendee is allowed to de-register from the event, e.g., a course ‘photo-
+                shop’ can be cancelled up to 24 hours before the scheduled date’.
+            </p>
+            
+            <p>
+                Only UNSW staff are allowed to post (i.e., convene) events. Both UNSW staff and student can register for
+                any event provided the event capacity has not exceeded. However, a UNSW staff cannot register for an
+                event for which they are the convenor. Both UNSW staff and students can register for an event. Every
+                logged in user must also have a link to a dashboard. If the user is a student, then the dashboard should
+                display all current and past events that they have registered for. If the user is a staff, then their dashboard
+                will display (i) current and past events that they have registered for (ii) current and past events that they
+                have posted (iii) any cancelled events.
+                Additionally, when a convenor clicks on an event they have
+                organised, they should be able to see a list of attendees for that event. An unauthenticated user cannot
+                access the website.
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
