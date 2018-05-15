@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block body %}
+<header class="masthead" style="background-image: url('{{ url_for('static',filename='unsw.jpg')}}')">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h1>Event Management System</h1>
+                    <span class="subheading">UNSW Event Management System</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!--Main Content-->
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            {% for event in events %}
+                {% if event.status == 'CANCELED' %}
+                    <div class="post-preview">
+                        <a href="{{ url_for('info', eventId = event.event_id) }}">
+                            <h2 class="post-title">
+                                {{event.title}}
+                            </h2>
+                        </a>
+                        <p class="post-meta">Post by {{ event.creater }} start at {{ event.start }}</p>
+                    </div>
+                    <hr>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

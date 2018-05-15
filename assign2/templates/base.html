@@ -33,20 +33,28 @@
                             <a class="nav-link" href="#">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Post</a>
+                            <a class="nav-link" href="{{ url_for('post') }}">Post</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Past Post</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Canceled</a>
+                            <a class="nav-link" href="{{ url_for('cance') }}">Canceled</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('about') }}">About</a>
                         </li>
+
+                        {% if current_user.is_anonymous %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                                <a class="nav-link" href="{{ url_for('login') }}">Login</a>
                         </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                        {% endif %}
+
                     </ul>
                 </div>
             </div>

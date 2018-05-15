@@ -14,4 +14,23 @@
     </div>
 </header>
 <!--Main Content-->
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            {% for event in events %}
+                <div class="post-preview">
+                    <a href="{{ url_for('info', eventId = event.event_id) }}">
+                        <h2 class="post-title">
+                            {{event.title}}
+                        </h2>
+                    </a>
+                    <p class="post-meta">Post by {{ event.creater }} start at {{ event.start }}</p>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 {% endblock %}

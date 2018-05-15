@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<header class="masthead" style="background-image: url('{{ url_for('static', filename = 'asb-unsw-campus-15.jpg') }}')">
+    </br>
+    </br>
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h1>{{ event.title }}</h1>
+                    <h3>Start date: {{ event.start }}</h2></br>
+                    <h3>End date: {{ event.end }}</h2><br>
+                    <h3>Capacity: {{ event.capacity}}</h3><br>
+                    <h3>Enrolled: {{event.events_all.count()}} </h3><br>
+                    <h3 style="text-align: left">{{event.details}}</h3>
+                    <br><br>
+                    <div style="text-align: left">
+                        {% if event.creater != current_user.name and event.status == 'OPEN'  %}
+                            <button type="submit" class="btn btn-primary" id="sendMessageButton">
+                                <a href="{{ url_for('register', eventId = event.event_id) }}"  style="text-align: left ; color: white ">Regist</a>
+                            </button>
+                        {% else %}
+                            <button type="submit" class="btn btn-primary" id="sendMessageButton">
+                                <a href="{{ url_for('cancele', eventId = event.event_id) }}" style=" text-align: left ; color: white ">Cancele</a>
+                            </button>
+                        {% endif %}
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+    </br></br> </br></br></br></br>
+</header>
+
+{% endblock %}
+
+

@@ -10,7 +10,16 @@
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <form action="{{ url_for('login') }}" class="sentMessage" method="post">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <ul class="flashes">
+                                {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endwith %}
+                    <form class="sentMessage" method="POST">
                         <div class="control-group">
                             <div class="form-group ">
                                 <label style="float:left">ZID</label>
@@ -23,11 +32,10 @@
                         <div class="control-group">
                             <div class="form-group">
                                 <label style="float:left" >PASSWORD</label>
-                                <input type="text" class="form-control" placeholder="password" name = "password" required data-validation-required-message="Please enter your password.">
+                                <input type="password" class="form-control" placeholder="password" name = "password" required data-validation-required-message="Please enter your password.">
                                 <p class="help-block text-danger"></p>
                             </div>
-                        </div>
-                        
+                        </div> 
                         <button type="submit" class="btn btn-primary" id="sendMessageButton">Login</button>
                     </form>
                 </div>

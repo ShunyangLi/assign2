@@ -2,9 +2,9 @@ from flask_login import UserMixin
 from server import db
 
 
-event_realation = db.Table('event_realation', db.Model.metadata,
-    db.Column('events_id', db.Integer, db.ForeignKey('events.event_id')),
-    db.Column('users_id', db.Integer, db.ForeignKey('users.user_id'))
+event_realation = db.Table('event_realation',
+    db.Column('event_id', db.Integer, db.ForeignKey('events.event_id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.user_id'))
 )
 
 class User(UserMixin, db.Model):
@@ -18,8 +18,8 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(120), unique=True)
     role = db.Column(db.String(80))
     
-    users = db.relationship('Event', secondary = event_realation,
-                                backref=db.backref('users_all', lazy='dynamic'))
+    events = db.relationship('Event', secondary = event_realation,
+                                backref=db.backref('events_all', lazy='dynamic'))
                                     
     def __init__(self, name, zid, email, password, role):
         self.name = name
@@ -39,13 +39,13 @@ class User(UserMixin, db.Model):
     @property
     def is_active(self):
         return True
-        
-    @property
+
+    @property    
     def is_anonymous(self):
         return False
     
     def get_id(self):
-        return self.id
+        return self.user_id
     
     def validate_password(self, password):
         return self.password == password
@@ -62,23 +62,25 @@ class Event(db.Model):
     event_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     details = db.Column(db.Text)
-    start = db.Column(db.Date)
-    end = db.Column(db.Date)
+    start = db.Column(db.String(80))
+    end = db.Column(db.String(80))
     capacity = db.Column(db.Integer)
     status = db.Column(db.String(80))
+    creater = db.Column(db.String(80))
     
-    events = db.relationship('User',secondary=event_realation,
-                            backref=db.backref('event_all', lazy='dynamic'))
+    users = db.relationship('User',secondary=event_realation,
+                            backref=db.backref('users_all', lazy='dynamic'))
     
     
-    def __init__(self,title,details,start,end,capacity,status):
-        self._title = title
-        self._details = details
-        self._start = start
-        self._end = end
-        self._capacity = capacity
-        self._status = status
+    def __init__(self,title,details,start,end,capacity,status, creater):
+        self.title = title
+        self.details = details
+        self.start = start
+        self.end = end
+        self.capacity = capacity
+        self.status = status
+        self.creater = creater
 
     def __repr__(self):
-        return '<Event: %r>'%self._title
+        return '<Event: %r>'%self.title
 

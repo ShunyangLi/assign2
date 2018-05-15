@@ -21,3 +21,4 @@ for i in range(0, len(Name), 1):
     db.session.add(u)
 
 db.session.commit()
+
