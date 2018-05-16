@@ -18,18 +18,14 @@
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
                 <p>Before you post, you need fill in all the information that required</p>
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        <ul class="flashes">
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% endwith %}
+                {% if post %}
+                    <div class="alert alert-danger">
+                        <strong>Warning!</strong> {{post_info}}
+                    </div>
+                {% endif %}
                 <form class="sentMessage"  method="POST">
                     <div class="control-group">
-                        <div class="form-group ">
+                        <div class="form-group floating-label-form-group controls">
                             <label>Title</label>
                             <input type="text" class="form-control"  placeholder="Title" name="title" required data-validation-required-message="Please enter title">
                             <p class="help-block text-danger"></p>
@@ -39,7 +35,7 @@
                     <div class="control-group">
                         <div class="form-group floating-label-form-group controls">
                             <label>Start</label>
-                            <input type="date" class="form-control" placeholder="start" name="start" required data-validation-required-message="Please enter start date">
+                            <input type="date" class="form-control" placeholder="start: dd-mm-yyyy" name="start" required data-validation-required-message="Please enter start date">
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
@@ -47,7 +43,7 @@
                     <div class="control-group">
                         <div class="form-group floating-label-form-group controls">
                             <label>End</label>
-                            <input type="date" class="form-control" placeholder="end" name="end" required data-validation-required-message="Please enter end date">
+                            <input type="date" class="form-control" placeholder="end: dd-mm-yyyy" name="end" required data-validation-required-message="Please enter end date">
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
@@ -61,10 +57,13 @@
                     </div>
 
                     <div class="control-group">
-                        <div class="form-group floating-label-form-group controls">
-                            <label>Detail</label>
-                            <textarea rows="5" class="form-control" placeholder="detail" name="detail" required data-validation-required-message="Please enter detail"></textarea>
+                        <div class="form-group ">
+                            <label>Detail:</label>
+                            <textarea rows="8" class="form-control" id="editor1" placeholder="detail" name="detail" required data-validation-required-message="Please enter detail"></textarea>
                             <p class="help-block text-danger"></p>
+                            <script>
+                                CKEDITOR.replace('editor1');
+                            </script>
                         </div>
                     </div>
                     

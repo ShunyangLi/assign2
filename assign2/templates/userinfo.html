@@ -1,0 +1,46 @@
+{% extends 'dashboard.html' %}
+{% block dash %}
+<header class="masthead" style="background-image: url('{{ url_for('static', filename = 'asb-unsw-campus-15.jpg') }}')">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    {% if val %}
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> {{message}}
+                        </div>
+                    {% endif %}
+                    <h1>{{ event.title }}</h1>
+                    <h3>Start date: {{ event.start }}</h2></br>
+                    <h3>End date: {{ event.end }}</h2><br>
+                    <h3>Capacity: {{ event.capacity}}</h3><br>
+                    <h3>Enrolled: {{event.events_all.count()}} </h3><br>
+                    <div style="text-align: left">
+                    {% if event.status == 'OPEN' %}
+                        <button type="submit" class="btn btn-primary" id="sendMessageButton">
+                            <a href="{{ url_for('user_cancele', eventId = event.event_id) }}" style=" text-align: left ; color: white ">Cancele</a>
+                        </button>
+                    {% ennif %}
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+</header>
+
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <p>
+                    {{event.details}} 
+                </p>
+            </div>
+        </div>
+    </div>
+</article>
+
+{% endblock %}
+
+

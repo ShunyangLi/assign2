@@ -10,15 +10,11 @@
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                            <ul class="flashes">
-                                {% for message in messages %}
-                                    <li>{{ message }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    {% endwith %}
+                    {% if val %}
+                        <div class="alert alert-danger">
+                            <strong>Warning!</strong> {{message}}
+                        </div>
+                    {% endif %}
                     <form class="sentMessage" method="POST">
                         <div class="control-group">
                             <div class="form-group ">

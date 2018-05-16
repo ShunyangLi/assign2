@@ -61,7 +61,7 @@ class Event(db.Model):
     
     event_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
-    details = db.Column(db.Text)
+    details = db.Column(db.UnicodeText)
     start = db.Column(db.String(80))
     end = db.Column(db.String(80))
     capacity = db.Column(db.Integer)
