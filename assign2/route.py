@@ -89,7 +89,7 @@ def register(eventId):
         flash('You alreay register this event!')
     else:
         event.users.append(user)
-        user.events.append(event)
+        # user.events.append(event)
         db.session.commit()
     return redirect(url_for('index'))
 
@@ -109,7 +109,7 @@ def user_curr():
 @login_required
 def user_info(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
-    return render_template('current.html', event = event)
+    return render_template('userinfo.html', event = event)
 
 @app.route('/user_past/',methods = ['POST','GET'])
 @login_required
@@ -123,10 +123,12 @@ def user_past():
 def user_cancele(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
     user = User.query.filter_by(zid = current_user.zid).one()
-    event.users.remove(user)
-    user.events.remove(event)
-    db.session.commit()
-    return render_template('userinfo.html',val = True, message = 'deregister')
+    if user in event.users:
+        event.users.remove(user)
+        # user.events.remove(event)
+        db.session.commit()
+    else:
+        return render_template('userinfo.html',val = True, message = 'deregister', event = event)
 
 @app.route('/currpost/',methods = ['POST','GET'])
 @login_required

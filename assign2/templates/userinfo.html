@@ -11,6 +11,7 @@
                             <strong>Success!</strong> {{message}}
                         </div>
                     {% endif %}
+                    {% if event %}
                     <h1>{{ event.title }}</h1>
                     <h3>Start date: {{ event.start }}</h2></br>
                     <h3>End date: {{ event.end }}</h2><br>
@@ -21,7 +22,7 @@
                         <button type="submit" class="btn btn-primary" id="sendMessageButton">
                             <a href="{{ url_for('user_cancele', eventId = event.event_id) }}" style=" text-align: left ; color: white ">Cancele</a>
                         </button>
-                    {% ennif %}
+                    {% endif %}
                     </div>
                 </div> 
             </div>
@@ -40,7 +41,7 @@
         </div>
     </div>
 </article>
-
+{% endif %}
 {% endblock %}
 
 
