@@ -145,6 +145,12 @@ def pastpost():
     events = Event.query.filter_by(creater = current_user.name).all()
     return render_template('pastpost.html',events = events)
 
+@app.route('/info/<eventId>/participant/',methods = ['POST','GET'])
+@login_required
+def participant(eventId):
+    event = Event.query.filter_by(event_id = int(eventId)).one()
+    return render_template('participant.html',user = event.events_all.all())
+
 @app.route('/logout/')
 @login_required
 def logout():

@@ -16,12 +16,32 @@
                         {% endif %}
                     {% endwith %}
                     <h1>{{ event.title }}</h1>
-                    <h3>Start date: {{ event.start }}</h2></br>
-                    <h3>End date: {{ event.end }}</h2><br>
-                    <h3>Starus: {{ event.status }}</h3><br>
-                    <h3>Capacity: {{ event.capacity}}</h3><br>
-                    <h3>Enrolled: {{event.events_all.count()}} </h3><br>
-                    <div style="text-align: left">
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr>
+                                <td>Start date</td>
+                                <td>{{ event.start }}</td>
+                            </tr>
+                            <tr>
+                                <td>End date</td>
+                                <td>{{ event.end }}</td>
+                            </tr>
+                            <tr>
+                                <td>Status</td>
+                                <td>{{ event.status }}</td>
+                            </tr>
+                            <tr>
+                                <td>Capacity</td>
+                                <td>{{ event.capacity}}</td>
+                            </tr>
+                            <tr>
+                                <td>Enrolled</td>
+                                <td>{{event.events_all.count()}}</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    <div style="text-align: right">
                         {% if event.creater != current_user.name and event.status == 'OPEN'  %}
                             <button type="submit" class="btn btn-primary" id="sendMessageButton">
                                 <a href="{{ url_for('register', eventId = event.event_id) }}"  style="text-align: left ; color: white ">Regist</a>
@@ -30,6 +50,9 @@
                             {% if event.status != 'CANCELED' and event.status != 'CLOSED' %}
                                 <button type="submit" class="btn btn-primary" id="sendMessageButton">
                                     <a href="{{ url_for('cancele', eventId = event.event_id) }}" style=" text-align: left ; color: white ">Cancele</a>
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="sendMessageButton">
+                                    <a href="{{ url_for('participant', eventId = event.event_id) }}" style=" text-align: left ; color: white ">Participant</a>
                                 </button>
                             {% endif %}
                         {% endif %}
