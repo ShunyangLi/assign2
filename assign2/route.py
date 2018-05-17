@@ -9,9 +9,12 @@ from flask_login import current_user, login_required, login_user, logout_user
 @app.route('/')
 def index():
     now = datetime.now()
+    now = now.strftime("%d-%m-%Y")
     for event in Event.query.all():
-        if event.end < str(now):
+        if str(event.end) < now:
             event._status = 'CLOSED'
+            db.session.add(event)
+            db.session.commit()
     return render_template('index.html', events = Event.query.all())
     
 @app.route('/about')
