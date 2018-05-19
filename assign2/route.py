@@ -65,7 +65,8 @@ def info(eventId):
 @login_required
 def seminarinfo(seminarId):
     seminar = Seminar.query.filter_by(seminar_id = int(seminarId)).one()
-    return render_template('seminarinfo.html', seminar = seminar)
+    sessions = seminar.seminar_all.all()
+    return render_template('seminarinfo.html', seminar = seminar, sessions = sessions)
 
 
 @app.route('/cancele/<eventId>',methods = ['POST','GET'])
@@ -106,7 +107,7 @@ def dashboard():
 @login_required
 def user_curr():
     user = User.query.filter_by(zid = current_user.zid).one()
-    return render_template('usercurr.html',regists = user.event_users_all.all())
+    return render_template('usercurr.html',regists = user.events_all.all())
 
 @app.route('/user_info/<eventId>',methods = ['POST','GET'])
 @login_required
@@ -149,7 +150,7 @@ def pastpost():
 @login_required
 def participant(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
-    return render_template('participant.html',user = event.events_all.all())
+    return render_template('participant.html',user = event.event_users_all.all())
 
 @app.route('/postSeminar/',methods = ['POST','GET'])
 @login_required
@@ -174,6 +175,81 @@ def postSeminar():
             return render_template('postseminar.html', post = True, post_info = 'Enter capacity as integer!')
 
     return render_template('postseminar.html')
+
+@app.route('/Seminarcancele/<SeminarId>',methods = ['POST','GET'])
+@login_required
+def Seminarcancele(SeminarId):
+    seminar = Seminar.query.filter_by(seminar_id = int(SeminarId)).one()
+    seminar.status = 'CANCELED'
+    db.session.add(seminar)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+
+"""
+这一部分还没写完
+"""
+@app.route('/seminarinfo/<SeminarId>/addsession',methods = ['POST','GET'])
+@login_required
+def addsession(SeminarId):
+    seminar = Seminar.query.filter_by(seminar_id = int(SeminarId)).one()
+    if request.method == 'POST':
+        title = request.form['title']
+        start = request.form['start']
+        end = request.form['end']
+        capacity = request.form['capacity']
+        detail = request.form['detail']
+        speaker = request.form['speaker']
+        status = 'OPEN'
+        if Eventsystem.check_data(start,end) and Eventsystem.check_digital(capacity):
+            session = Session(title,detail,start,end,capacity,status,current_user.name, speaker)
+            db.session.add(session)
+            db.session.commit()
+            seminar.sessions.append(session)
+            db.session.commit()
+            return redirect(url_for('index'))
+        elif Eventsystem.check_data(start,end) == False:
+            return render_template('postsession.html', post = True, post_info = 'End date should less than start data!')
+        elif Eventsystem.check_digital(capacity) == False:
+            return render_template('postsession.html', post = True, post_info = 'Enter capacity as integer!')
+    return render_template('postsession.html')
+
+@app.route('/sessioninfo/<sessionId>',methods = ['POST','GET'])
+@login_required
+def sessioninfo(sessionId):
+    sessions= Session.query.filter_by(session_id = sessionId).one()
+    return render_template('sessioninfo.html', sessions = sessions)
+
+
+@app.route('/registsession/<sessionId>',methods = ['POST','GET'])
+@login_required
+def registsession(sessionId):
+    session = Session.query.filter_by(session_id = int(sessionId)).one()
+    user = User.query.filter_by(zid = current_user.zid).one()
+
+    if user in session.sessions_all.all():
+        flash('You alreay register this event!')
+    else:
+        session.users.append(user)
+        # user.events.append(event)
+        db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/Sessioncancele/<sessionId>',methods = ['POST','GET'])
+@login_required
+def Sessioncancele(sessionId):
+    session = Session.query.filter_by(session_id = int(sessionId)).one()
+    session.status = 'CANCELED'
+    db.session.add(session)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/sessioninfo/<sessionId>/participant_session/',methods = ['POST','GET'])
+@login_required
+def participant_session(sessionId):
+    session = Session.query.filter_by(session_id = int(sessionId)).one()
+    return render_template('participant_session.html',user = session.sessions_all.all())
+
 
 @app.route('/logout/')
 @login_required

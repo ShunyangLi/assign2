@@ -1,51 +1,50 @@
 {% extends 'base.html' %}
 {% block body %}
-
 <header class="masthead" style="background-image: url('{{ url_for('static', filename = 'asb-unsw-campus-15.jpg') }}')">
     <div class="overlay"></div>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <h1>{{ seminar.title }}</h1>
+                    <h1>{{ sessions.title }}</h1>
                     <table class="table table-hover">
                         <tbody>
                             <tr>
                                 <td>Start date</td>
-                                <td>{{ seminar.start }}</td>
+                                <td>{{ sessions.start }}</td>
                             </tr>
                             <tr>
                                 <td>End date</td>
-                                <td>{{ seminar.end }}</td>
+                                <td>{{ sessions.end }}</td>
                             </tr>
                             <tr>
                                 <td>Status</td>
-                                <td>{{ seminar.status }}</td>
+                                <td>{{ sessions.status }}</td>
                             </tr>
                             <tr>
                                 <td>Capacity</td>
-                                <td>{{ seminar.capacity}}</td>
+                                <td>{{ sessions.capacity}}</td>
                             </tr>
                             <tr>
                                 <td>Enrolled</td>
-                                <td>{{seminar.seminars_all.count()}}</td>
+                                <td>{{sessions.session_all.count()}}</td>
                             </tr>
                             
                         </tbody>
                     </table>
                     <div style="text-align: right">
-                        {% if seminar.creater != current_user.name and seminar.status == 'OPEN'  %}
+                        {% if sessions.creater != current_user.name and sessions.status == 'OPEN'  %}
                             <button type="submit" class="btn btn-primary" id="sendMessageButton">
-                                <a href="#"  style="text-align: left ; color: white ">Regist</a>
+                                <a href=" {{ url_for('registsession', sessionId = sessions.session_id) }} "  style="text-align: left ; color: white ">Regist</a>
                             </button>
                         {% else %}
-                            {% if seminar.status != 'CANCELED' and seminar.status != 'CLOSED' %}
+                            {% if sessions.status != 'CANCELED' and sessions.status != 'CLOSED' %}
                                 <button type="submit" class="btn btn-primary" id="sendMessageButton">
-                                    <a href=" {{ url_for('Seminarcancele', SeminarId = seminar.seminar_id) }} " style=" text-align: left ; color: white ">Cancele</a>
+                                    <a href=" {{ url_for('Sessioncancele', sessionId = sessions.session_id ) }} " style=" text-align: left ; color: white ">Cancele</a>
                                 </button>
 
                                 <button type="submit" class="btn btn-primary" id="sendMessageButton">
-                                    <a href="{{ url_for('addsession', SeminarId = seminar.seminar_id) }}" style=" text-align: left ; color: white ">Add session</a>
+                                    <a href=" {{ url_for('participant_session', sessionId = sessions.session_id ) }} " style=" text-align: left ; color: white ">Participant</a>
                                 </button>
                             {% endif %}
                         {% endif %}
@@ -56,44 +55,11 @@
     </div>
 </header>
 
-<h1 style="text-align: center">All sessions</h1>
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Start date
-                </th>
-                <th>
-                    End date
-                </th>
-                <th>
-                    Capacity
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for session in sessions %}
-                {% if session %}
-                    <tr>
-                        <td><a href=" {{ url_for('sessioninfo', sessionId=session.session_id )}}">{{ session.title }}</a></td>
-                        <td>{{ session.start }}</td>
-                        <td>{{ session.end }}</td>
-                        <td>{{ session.capacity }}</td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-</table>
-<br>
-
 <article>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
-                {{seminar.details|safe}} 
+                {{sessions.details|safe}} 
             </div>
         </div>
     </div>
