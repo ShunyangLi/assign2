@@ -1,21 +1,13 @@
 from server import app
-from datetime import datetime
 from EventSystem import Eventsystem
-from event import User, Event,db
+from event import User, Event,Seminar,Session,db
 from flask import Flask, render_template, request, url_for, redirect,flash
 from flask_login import current_user, login_required, login_user, logout_user
 
 
 @app.route('/')
 def index():
-    now = datetime.now()
-    now = now.strftime("%d-%m-%Y")
-    for event in Event.query.all():
-        if str(event.end) < now:
-            event._status = 'CLOSED'
-            db.session.add(event)
-            db.session.commit()
-    return render_template('index.html', events = Event.query.all())
+    return render_template('index.html', events = Event.query.all(), seminars = Seminar.query.all())
     
 @app.route('/about')
 def about():
@@ -68,6 +60,14 @@ def info(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
     return render_template('info.html', event = event)
 
+
+@app.route('/seminarinfo/<seminarId>',methods = ['POST','GET'])
+@login_required
+def seminarinfo(seminarId):
+    seminar = Seminar.query.filter_by(seminar_id = int(seminarId)).one()
+    return render_template('seminarinfo.html', seminar = seminar)
+
+
 @app.route('/cancele/<eventId>',methods = ['POST','GET'])
 @login_required
 def cancele(eventId):
@@ -100,13 +100,13 @@ def register(eventId):
 @login_required
 def dashboard():
     user = User.query.filter_by(zid = current_user.zid).one()
-    return render_template('dashboard.html',regists = user.users_all.all())
+    return render_template('dashboard.html',regists = user.event_users_all.all())
 
 @app.route('/user_curr/')
 @login_required
 def user_curr():
     user = User.query.filter_by(zid = current_user.zid).one()
-    return render_template('dashboard.html',regists = user.users_all.all())
+    return render_template('usercurr.html',regists = user.event_users_all.all())
 
 @app.route('/user_info/<eventId>',methods = ['POST','GET'])
 @login_required
@@ -118,7 +118,7 @@ def user_info(eventId):
 @login_required
 def user_past():
     user = User.query.filter_by(zid = current_user.zid).one()
-    return render_template('userpast.html', regists = user.users_all.all())
+    return render_template('userpast.html', regists = user.event_users_all.all())
 
 
 @app.route('/user_cancele/<eventId>',methods = ['POST','GET'])
@@ -150,6 +150,30 @@ def pastpost():
 def participant(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
     return render_template('participant.html',user = event.events_all.all())
+
+@app.route('/postSeminar/',methods = ['POST','GET'])
+@login_required
+def postSeminar():
+    if request.method == 'POST':
+        title = request.form['title']
+        start = request.form['start']
+        end = request.form['end']
+        capacity = request.form['capacity']
+        detail = request.form['detail']
+        convenor = request.form['convenor']
+        status = 'OPEN'
+
+        if Eventsystem.check_data(start,end) and Eventsystem.check_digital(capacity):
+            seminar = Seminar(title,detail,start,end,capacity,status,current_user.name, convenor)
+            db.session.add(seminar)
+            db.session.commit()
+            return redirect(url_for('index'))
+        elif Eventsystem.check_data(start,end) == False:
+            return render_template('postseminar.html', post = True, post_info = 'End date should less than start data!')
+        elif Eventsystem.check_digital(capacity) == False:
+            return render_template('postseminar.html', post = True, post_info = 'Enter capacity as integer!')
+
+    return render_template('postseminar.html')
 
 @app.route('/logout/')
 @login_required

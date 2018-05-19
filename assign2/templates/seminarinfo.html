@@ -13,44 +13,44 @@
                             </div>
                         {% endif %}
                     {% endwith %}
-                    <h1>{{ event.title }}</h1>
+                    <h1>{{ seminar.title }}</h1>
                     <table class="table table-hover">
                         <tbody>
                             <tr>
                                 <td>Start date</td>
-                                <td>{{ event.start }}</td>
+                                <td>{{ seminar.start }}</td>
                             </tr>
                             <tr>
                                 <td>End date</td>
-                                <td>{{ event.end }}</td>
+                                <td>{{ seminar.end }}</td>
                             </tr>
                             <tr>
                                 <td>Status</td>
-                                <td>{{ event.status }}</td>
+                                <td>{{ seminar.status }}</td>
                             </tr>
                             <tr>
                                 <td>Capacity</td>
-                                <td>{{ event.capacity}}</td>
+                                <td>{{ seminar.capacity}}</td>
                             </tr>
                             <tr>
                                 <td>Enrolled</td>
-                                <td>{{event.events_all.count()}}</td>
+                                <td>{{seminar.seminars_all.count()}}</td>
                             </tr>
                             
                         </tbody>
                     </table>
                     <div style="text-align: right">
-                        {% if event.creater != current_user.name and event.status == 'OPEN'  %}
+                        {% if seminar.creater != current_user.name and seminar.status == 'OPEN'  %}
                             <button type="submit" class="btn btn-primary" id="sendMessageButton">
-                                <a href="{{ url_for('register', eventId = event.event_id) }}"  style="text-align: left ; color: white ">Regist</a>
+                                <a href="#"  style="text-align: left ; color: white ">Regist</a>
                             </button>
                         {% else %}
-                            {% if event.status != 'CANCELED' and event.status != 'CLOSED' %}
+                            {% if seminar.status != 'CANCELED' and seminar.status != 'CLOSED' %}
                                 <button type="submit" class="btn btn-primary" id="sendMessageButton">
-                                    <a href="{{ url_for('cancele', eventId = event.event_id) }}" style=" text-align: left ; color: white ">Cancele</a>
+                                    <a href="#" style=" text-align: left ; color: white ">Cancele</a>
                                 </button>
                                 <button type="submit" class="btn btn-primary" id="sendMessageButton">
-                                    <a href="{{ url_for('participant', eventId = event.event_id) }}" style=" text-align: left ; color: white ">Participant</a>
+                                    <a href="#" style=" text-align: left ; color: white ">Participant</a>
                                 </button>
                             {% endif %}
                         {% endif %}
@@ -65,7 +65,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
-                {{event.details|safe}} 
+                {{seminar.details|safe}} 
             </div>
         </div>
     </div>

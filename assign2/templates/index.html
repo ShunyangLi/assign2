@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
-<header class="masthead" style="background-image: url('{{ url_for('static',filename='unsw.jpg')}}')">
+<header class="masthead" style="background-image: url('{{ url_for('static',filename='asb-unsw-campus-53.jpg')}}'); width: auto; height:500px;">
     <div class="overlay"></div>
     <div class="container">
         <div class="row">
@@ -33,4 +33,21 @@
     </div>
 </div>
 
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            {% for seminar  in seminars %}
+                <div class="post-preview">
+                    <a href="{{ url_for('seminarinfo', seminarId = seminar.seminar_id) }}">
+                        <h2 class="post-title">
+                            {{seminar.title}}
+                        </h2>
+                    </a>
+                    <p class="post-meta">Post by {{ seminar.creater }} start at {{ seminar.start }}</p>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}

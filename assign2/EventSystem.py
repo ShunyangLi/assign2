@@ -1,5 +1,6 @@
-from event import db,User,Event
+from event import User, Event,Seminar,Session,db
 from abc import ABC, abstractmethod
+from datetime import datetime
 
 class Eventsystem(ABC):
 
@@ -21,3 +22,22 @@ class Eventsystem(ABC):
         else:
             return True
     
+    def check_statu():
+        now = datetime.now()
+        now = now.strftime("%d-%m-%Y")
+
+        for event in Event.query.all():
+            if str(event.end) < now or event.capacity >= event.events_all.count():
+                event.status = 'CLOSED'
+                db.session.add(event)
+                db.session.commit()
+        for seminar in Seminar.query.all():
+            if str(seminar.end) < now or seminar.capacity >= seminar.seminars_all.count():
+                seminar.status = 'CLOSED'
+                db.session.add(seminar)
+                db.session.commit()
+        for session in Session.query.all():
+            if str(session.end) < now or session.capacity >= session.sessions_all.count():
+                session.status = 'CLOSED'
+                db.session.add(session)
+                db.session.commit()
