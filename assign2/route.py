@@ -150,7 +150,7 @@ def pastpost():
 @login_required
 def participant(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
-    return render_template('participant.html',user = event.event_users_all.all())
+    return render_template('participant.html',user = event.events_all.all())
 
 @app.route('/postSeminar/',methods = ['POST','GET'])
 @login_required
