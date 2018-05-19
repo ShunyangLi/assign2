@@ -8,3 +8,4 @@ This is log book
 1.  未完善user的dashboard方面的信息，以及用户注册以后的事情
 2.  未添加guest以及fee的model
 3.  未修复提示错误信息的东西
+4.  添加userinfo

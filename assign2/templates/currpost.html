@@ -25,7 +25,27 @@
                                 {{event.title}}
                             </h2>
                         </a>
-                        <p class="post-meta">Post by {{ event.creater }} start at {{ event.start }}</p>
+                        <p class="post-meta">Post by {{ event.creater }} start at {{ event.start }} type: course</p>
+                    </div>
+                    <hr>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            {% for seminar in seminars %}
+                {% if seminar.status == 'OPEN' %}
+                    <div class="post-preview">
+                        <a href="{{ url_for('seminarinfo', seminarId = seminar.seminar_id) }}">
+                            <h2 class="post-title">
+                                {{seminar.title}}
+                            </h2>
+                        </a>
+                        <p class="post-meta">Post by {{ seminar.creater }} start at {{ seminar.start }} type: seminar</p>
                     </div>
                     <hr>
                 {% endif %}

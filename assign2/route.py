@@ -81,7 +81,7 @@ def cancele(eventId):
 @app.route('/cance/',methods = ['POST','GET'])
 @login_required
 def cance():
-    return render_template('canele.html',events = Event.query.all())
+    return render_template('canele.html',events = Event.query.all(), seminars = Seminar.query.all())
 
 @app.route('/register/<eventId>',methods = ['POST','GET'])
 @login_required
@@ -101,25 +101,31 @@ def register(eventId):
 @login_required
 def dashboard():
     user = User.query.filter_by(zid = current_user.zid).one()
-    return render_template('dashboard.html',regists = user.event_users_all.all())
+    events = user.event_users_all.all()
+    seminars = user.seminar_users_all.all()
+    return render_template('dashboard.html',events=events,seminars=seminars)
 
 @app.route('/user_curr/')
 @login_required
 def user_curr():
     user = User.query.filter_by(zid = current_user.zid).one()
-    return render_template('usercurr.html',regists = user.events_all.all())
+    events = user.event_users_all.all()
+    seminars = user.seminar_users_all.all()
+    return render_template('usercurr.html',events=events,seminars=seminars)
 
-@app.route('/user_info/<eventId>',methods = ['POST','GET'])
-@login_required
-def user_info(eventId):
-    event = Event.query.filter_by(event_id = int(eventId)).one()
-    return render_template('userinfo.html', event = event)
+# @app.route('/user_info/<eventId>',methods = ['POST','GET'])
+# @login_required
+# def user_info(eventId):
+#     event = Event.query.filter_by(event_id = int(eventId)).one()
+#     return render_template('userinfo.html', event = event)
 
 @app.route('/user_past/',methods = ['POST','GET'])
 @login_required
 def user_past():
     user = User.query.filter_by(zid = current_user.zid).one()
-    return render_template('userpast.html', regists = user.event_users_all.all())
+    events = user.event_users_all.all()
+    seminars = user.seminar_users_all.all()
+    return render_template('userpast.html', events=events,seminars=seminars)
 
 
 @app.route('/user_cancele/<eventId>',methods = ['POST','GET'])
@@ -138,13 +144,17 @@ def user_cancele(eventId):
 @login_required
 def currpost():
     events = Event.query.filter_by(creater = current_user.name).all()
-    return render_template('currpost.html',events = events)
+    seminars = Seminar.query.filter_by(creater = current_user.name).all()
+    return render_template('currpost.html',events = events, seminars = seminars)
+
 
 @app.route('/pastpost/',methods = ['POST','GET'])
 @login_required
 def pastpost():
     events = Event.query.filter_by(creater = current_user.name).all()
-    return render_template('pastpost.html',events = events)
+    seminars = Seminar.query.filter_by(creater = current_user.name).all()
+    return render_template('pastpost.html',events = events, seminars = seminars)
+
 
 @app.route('/info/<eventId>/participant/',methods = ['POST','GET'])
 @login_required
@@ -175,6 +185,7 @@ def postSeminar():
             return render_template('postseminar.html', post = True, post_info = 'Enter capacity as integer!')
 
     return render_template('postseminar.html')
+
 
 @app.route('/Seminarcancele/<SeminarId>',methods = ['POST','GET'])
 @login_required
@@ -220,7 +231,6 @@ def sessioninfo(sessionId):
     sessions= Session.query.filter_by(session_id = sessionId).one()
     return render_template('sessioninfo.html', sessions = sessions)
 
-
 @app.route('/registsession/<sessionId>',methods = ['POST','GET'])
 @login_required
 def registsession(sessionId):
@@ -231,9 +241,23 @@ def registsession(sessionId):
         flash('You alreay register this event!')
     else:
         session.users.append(user)
-        # user.events.append(event)
         db.session.commit()
     return redirect(url_for('index'))
+
+
+@app.route('/cancelesession/<sessionId>',methods = ['POST','GET'])
+@login_required
+def cancelesession(sessionId):
+    session = Session.query.filter_by(session_id = int(sessionId)).one()
+    user = User.query.filter_by(zid = current_user.zid).one()
+
+    if user in session.users:
+        session.users.remove(user)
+        db.session.commit()
+    else:
+        return 'error'
+    return redirect(url_for('index'))
+
 
 @app.route('/Sessioncancele/<sessionId>',methods = ['POST','GET'])
 @login_required
@@ -249,6 +273,7 @@ def Sessioncancele(sessionId):
 def participant_session(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
     return render_template('participant_session.html',user = session.sessions_all.all())
+
 
 
 @app.route('/logout/')
