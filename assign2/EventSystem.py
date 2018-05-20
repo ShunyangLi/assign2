@@ -54,4 +54,10 @@ class Eventsystem(ABC):
             if user in session.users:
                 return True
         return None
+    
+    def validate_login_guest(username, password):
+        for user in User.query.all():
+            if user.name == username and user.validate_password(password):
+                return user
+        return None
 

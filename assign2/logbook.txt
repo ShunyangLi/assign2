@@ -3,6 +3,8 @@ This is log book
 1.  今天把数据库的模型建立以及测试完成，并建立了user和各个事件之间的关系，
 2.  并且添加了semianr和session的关系，建立了相对应的post方式，以及显示的方法
 3.  完成了所有事件的注册，取消，以及出勤
+4. 修复了seminar和user直接的关系，至少注册一门session在seminar里面，以及修复了用户显示
+的问题
 
 未完成：
 1.  未完善user的dashboard方面的信息，以及用户注册以后的事情

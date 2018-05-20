@@ -12,8 +12,22 @@ def index():
 @app.route('/about')
 def about():
     return render_template('about.html')
-    
-    
+
+@app.route('/registerguest/', methods = ['POST','GET'])
+def registerguest():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        """
+        There should have a check emials
+        """
+        guest = User(username,None ,username,password,'guest')
+        db.session.add(guest)
+        db.session.commit()
+        return render_template('successful.html', user = guest)
+    return render_template('register.html')
+
 @app.route('/login/',methods = ['POST','GET'])
 def login():
     if request.method == 'POST':
@@ -27,7 +41,12 @@ def login():
             else:
                 return render_template('login.html', val = True, message = 'Invalid zid or passsword')
         else:
-            return render_template('login.html', val = True, message = 'Please enter zid as an integer')
+            if Eventsystem.validate_login_guest(zid, password):
+                login_user(Eventsystem.validate_login_guest(zid, password))
+                return redirect(url_for('index'))
+            else:
+                return render_template('login.html', val = True, message = 'Invalid zid or passsword')
+            # return render_template('login.html', val = True, message = 'Please enter zid as an integer')
     return render_template('login.html')
 
 
