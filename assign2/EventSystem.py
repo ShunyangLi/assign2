@@ -41,3 +41,17 @@ class Eventsystem(ABC):
                 session.status = 'CLOSED'
                 db.session.add(session)
                 db.session.commit()
+
+    def getSeminar(session):
+        for seminar in Seminar.query.all():
+            if session in seminar.sessions:
+                return seminar
+        
+        return None
+
+    def getUser(user, seminar):
+        for session in seminar.seminar_all.all():       
+            if user in session.users:
+                return True
+        return None
+

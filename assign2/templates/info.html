@@ -41,9 +41,15 @@
                     </table>
                     <div style="text-align: right">
                         {% if event.creater != current_user.name and event.status == 'OPEN'  %}
-                            <button type="submit" class="btn btn-primary" id="sendMessageButton">
-                                <a href="{{ url_for('register', eventId = event.event_id) }}"  style="text-align: left ; color: white ">Regist</a>
-                            </button>
+                            {% if current_user in event.users %}
+                                <button type="submit" class="btn btn-primary" id="sendMessageButton">
+                                    <a href="{{ url_for('user_cancele', eventId = event.event_id) }}" style=" text-align: left ; color: white ">Cancele</a>
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-primary" id="sendMessageButton">
+                                    <a href="{{ url_for('register', eventId = event.event_id) }}"  style="text-align: left ; color: white ">Regist</a>
+                                </button>
+                            {% endif %}
                         {% else %}
                             {% if event.status != 'CANCELED' and event.status != 'CLOSED' %}
                                 <button type="submit" class="btn btn-primary" id="sendMessageButton">

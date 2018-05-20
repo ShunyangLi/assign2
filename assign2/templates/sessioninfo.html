@@ -34,9 +34,15 @@
                     </table>
                     <div style="text-align: right">
                         {% if sessions.creater != current_user.name and sessions.status == 'OPEN'  %}
-                            <button type="submit" class="btn btn-primary" id="sendMessageButton">
-                                <a href=" {{ url_for('registsession', sessionId = sessions.session_id) }} "  style="text-align: left ; color: white ">Regist</a>
-                            </button>
+                            {% if current_user in sessions.users %}
+                                <button type="submit" class="btn btn-primary" id="sendMessageButton">
+                                    <a href=" {{ url_for('cancelesession', sessionId = sessions.session_id) }} "  style="text-align: left ; color: white ">Cancele Session</a>
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-primary" id="sendMessageButton">
+                                    <a href=" {{ url_for('registsession', sessionId = sessions.session_id) }} "  style="text-align: left ; color: white ">Regist</a>
+                                </button>
+                            {% endif %}
                         {% else %}
                             {% if sessions.status != 'CANCELED' and sessions.status != 'CLOSED' %}
                                 <button type="submit" class="btn btn-primary" id="sendMessageButton">

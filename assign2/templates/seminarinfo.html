@@ -34,11 +34,7 @@
                         </tbody>
                     </table>
                     <div style="text-align: right">
-                        {% if seminar.creater != current_user.name and seminar.status == 'OPEN'  %}
-                            <button type="submit" class="btn btn-primary" id="sendMessageButton">
-                                <a href="#"  style="text-align: left ; color: white ">Regist</a>
-                            </button>
-                        {% else %}
+                        {% if seminar.creater == current_user.name %}
                             {% if seminar.status != 'CANCELED' and seminar.status != 'CLOSED' %}
                                 <button type="submit" class="btn btn-primary" id="sendMessageButton">
                                     <a href=" {{ url_for('Seminarcancele', SeminarId = seminar.seminar_id) }} " style=" text-align: left ; color: white ">Cancele</a>

@@ -119,6 +119,7 @@ def user_curr():
 #     event = Event.query.filter_by(event_id = int(eventId)).one()
 #     return render_template('userinfo.html', event = event)
 
+
 @app.route('/user_past/',methods = ['POST','GET'])
 @login_required
 def user_past():
@@ -139,6 +140,7 @@ def user_cancele(eventId):
         db.session.commit()
     else:
         return render_template('userinfo.html',val = True, message = 'deregister', event = event)
+    return render_template('dashboard.html')
 
 @app.route('/currpost/',methods = ['POST','GET'])
 @login_required
@@ -236,11 +238,14 @@ def sessioninfo(sessionId):
 def registsession(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
     user = User.query.filter_by(zid = current_user.zid).one()
+    seminar = Eventsystem.getSeminar(session)
 
     if user in session.sessions_all.all():
         flash('You alreay register this event!')
     else:
         session.users.append(user)
+        db.session.commit()
+        seminar.users.append(user)
         db.session.commit()
     return redirect(url_for('index'))
 
@@ -250,12 +255,20 @@ def registsession(sessionId):
 def cancelesession(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
     user = User.query.filter_by(zid = current_user.zid).one()
-
+    seminar = Eventsystem.getSeminar(session)
+    
     if user in session.users:
         session.users.remove(user)
         db.session.commit()
     else:
         return 'error'
+
+    if Eventsystem.getUser(user, seminar):
+        pass
+    else:
+        seminar.users.remove(user)
+        db.session.commit()
+
     return redirect(url_for('index'))
 
 
@@ -273,7 +286,6 @@ def Sessioncancele(sessionId):
 def participant_session(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
     return render_template('participant_session.html',user = session.sessions_all.all())
-
 
 
 @app.route('/logout/')
