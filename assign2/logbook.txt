@@ -12,3 +12,4 @@ This is log book
 3.  未修复提示错误信息的东西
 4.  添加userinfo
 5.  error message
+5.  检查时间的程序有问题，check_statu
