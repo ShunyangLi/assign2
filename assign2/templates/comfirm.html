@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block body %}
+<header class="masthead" style="background-image: url('{{ url_for('static', filename = 'asb-unsw-campus-15.jpg') }}')">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h1>This is comfirm page</h1>
+                    <div class="alert alert-info">
+                        <h2>Welcome {{user.name}}, this is comfirm page</h2>
+                        <h2>You are going to registe: {{event.title}}</h2>
+                        <h2>And it starts at: {{event.start}}</h2>
+                        <h2>And the fee is:${% if user.role == 'guest' %} {{event.fee/2}} {% else %} {{event.fee}} {% endif %} </h2>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="sendMessageButton">
+                        <a href=" {{ url_for('info', eventId = event.event_id) }} " style=" text-align: left ; color: white ">Cancele</a>
+                    </button>
+
+                    <button type="submit" class="btn btn-primary" id="sendMessageButton">
+                        <a href="{{ url_for('register', eventId = event.event_id) }}" style=" text-align: left ; color: white ">Accept</a>
+                    </button>
+
+                </div> 
+            </div>
+        </div>
+    </div>
+</header>
+
+{% endblock %}

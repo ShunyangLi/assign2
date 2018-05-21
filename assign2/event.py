@@ -88,12 +88,13 @@ class Event(db.Model):
     capacity = db.Column(db.Integer)
     status = db.Column(db.String(80))
     creater = db.Column(db.String(80))
+    fee = db.Column(db.Integer)
     
     users = db.relationship('User',secondary=event_realation,
                             backref=db.backref('event_users_all', lazy='dynamic'))
     
     
-    def __init__(self,title,details,start,end,capacity,status, creater):
+    def __init__(self,title,details,start,end,capacity,status, creater,fee):
         self.title = title
         self.details = details
         self.start = start
@@ -101,6 +102,7 @@ class Event(db.Model):
         self.capacity = capacity
         self.status = status
         self.creater = creater
+        self.fee = fee
 
     def __repr__(self):
         return '<Event: %r>'%self.title
@@ -116,7 +118,6 @@ class Seminar(db.Model):
     capacity = db.Column(db.Integer)
     status = db.Column(db.String(80))
     creater = db.Column(db.String(80))
-    convenor = db.Column(db.String(80))
 
     users = db.relationship('User',secondary=seminar_realation,
                             backref=db.backref('seminar_users_all', lazy='dynamic'))
@@ -124,7 +125,7 @@ class Seminar(db.Model):
     sessions = db.relationship('Session',secondary=seminar_session,
                             backref=db.backref('session_all', lazy='dynamic'))
 
-    def __init__(self,title,details,start,end,capacity,status, creater,convenor):
+    def __init__(self,title,details,start,end,capacity,status, creater):
         self.title = title
         self.details = details
         self.start = start
@@ -132,8 +133,7 @@ class Seminar(db.Model):
         self.capacity = capacity
         self.status = status
         self.creater = creater
-        self.convenor = convenor
-
+        
     def __repr__(self):
         return '<Seminar: %r>'%self.title
 
@@ -150,6 +150,7 @@ class Session(db.Model):
     status = db.Column(db.String(80))
     creater = db.Column(db.String(80))
     speaker = db.Column(db.String(80))
+    fee = db.Column(db.Integer)
 
     users = db.relationship('User',secondary=session_realation,
                         backref=db.backref('session_users_all', lazy='dynamic'))
@@ -157,7 +158,7 @@ class Session(db.Model):
     seminars = db.relationship('Seminar',secondary=seminar_session,
                             backref=db.backref('seminar_all', lazy='dynamic'))
 
-    def __init__(self,title,details,start,end,capacity,status, creater,speaker):
+    def __init__(self,title,details,start,end,capacity,status, creater,speaker, fee):
         self.title = title
         self.details = details
         self.start = start
@@ -166,6 +167,7 @@ class Session(db.Model):
         self.status = status
         self.creater = creater
         self.speaker = speaker
+        self.fee = fee
 
     def __repr__(self):
         return '<Seminar: %r>'%self.title

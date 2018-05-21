@@ -40,7 +40,7 @@
                                 </button>
                             {% else %}
                                 <button type="submit" class="btn btn-primary" id="sendMessageButton">
-                                    <a href=" {{ url_for('registsession', sessionId = sessions.session_id) }} "  style="text-align: left ; color: white ">Regist</a>
+                                    <a href=" {{ url_for('registsessioncomfirm', sessionId = sessions.session_id) }} "  style="text-align: left ; color: white ">Regist</a>
                                 </button>
                             {% endif %}
                         {% else %}

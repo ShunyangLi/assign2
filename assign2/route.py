@@ -57,12 +57,13 @@ def post():
         title = request.form['title']
         start = request.form['start']
         end = request.form['end']
+        fee = request.form['fee']
         capacity = request.form['capacity']
         detail = request.form['detail']
         status = 'OPEN'
 
         if Eventsystem.check_data(start,end) and Eventsystem.check_digital(capacity):
-            event = Event(title,detail,start,end,capacity,status,current_user.name)
+            event = Event(title,detail,start,end,capacity,status,current_user.name,fee)
             db.session.add(event)
             db.session.commit()
             return redirect(url_for('index'))
@@ -101,6 +102,17 @@ def cancele(eventId):
 @login_required
 def cance():
     return render_template('canele.html',events = Event.query.all(), seminars = Seminar.query.all())
+
+
+@app.route('/registercomfirme/<eventId>/',methods = ['POST','GET'])
+@login_required
+def registercomfirme(eventId):
+    event = Event.query.filter_by(event_id = int(eventId)).one()
+    user = User.query.filter_by(zid = current_user.zid).one()
+    if event:
+        return render_template('comfirm.html', event = event, user=user)
+    else:
+        return 'Not find'
 
 @app.route('/register/<eventId>',methods = ['POST','GET'])
 @login_required
@@ -192,11 +204,10 @@ def postSeminar():
         end = request.form['end']
         capacity = request.form['capacity']
         detail = request.form['detail']
-        convenor = request.form['convenor']
         status = 'OPEN'
 
         if Eventsystem.check_data(start,end) and Eventsystem.check_digital(capacity):
-            seminar = Seminar(title,detail,start,end,capacity,status,current_user.name, convenor)
+            seminar = Seminar(title,detail,start,end,capacity,status,current_user.name)
             db.session.add(seminar)
             db.session.commit()
             return redirect(url_for('index'))
@@ -229,12 +240,13 @@ def addsession(SeminarId):
         title = request.form['title']
         start = request.form['start']
         end = request.form['end']
+        fee = request.form['fee']
         capacity = request.form['capacity']
         detail = request.form['detail']
         speaker = request.form['speaker']
         status = 'OPEN'
         if Eventsystem.check_data(start,end) and Eventsystem.check_digital(capacity):
-            session = Session(title,detail,start,end,capacity,status,current_user.name, speaker)
+            session = Session(title,detail,start,end,capacity,status,current_user.name, speaker, fee)
             db.session.add(session)
             db.session.commit()
             seminar.sessions.append(session)
@@ -252,6 +264,17 @@ def sessioninfo(sessionId):
     sessions= Session.query.filter_by(session_id = sessionId).one()
     return render_template('sessioninfo.html', sessions = sessions)
 
+@app.route('/registsessioncomfirm/<sessionId>',methods = ['POST','GET'])
+@login_required
+def registsessioncomfirm(sessionId):
+    session = Session.query.filter_by(session_id = int(sessionId)).one()
+    user = User.query.filter_by(zid = current_user.zid).one()
+    if session:
+        return render_template('registsessioncomfirm.html', session = session, user = user)
+    else:
+        return 'Not find'
+
+
 @app.route('/registsession/<sessionId>',methods = ['POST','GET'])
 @login_required
 def registsession(sessionId):
@@ -264,6 +287,7 @@ def registsession(sessionId):
     else:
         session.users.append(user)
         db.session.commit()
+    if user not in seminar.users:
         seminar.users.append(user)
         db.session.commit()
     return redirect(url_for('index'))
