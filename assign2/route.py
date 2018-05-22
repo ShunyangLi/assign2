@@ -65,8 +65,6 @@ def post():
 
         try:
             Eventsystem.check_data(start, end)
-            # Eventsystem.check_digital(capacity)
-            # Eventsystem.check_digital(fee)
             event = Event(title,detail,start,end,capacity,status,current_user.name,fee)
             db.session.add(event)
             db.session.commit()
