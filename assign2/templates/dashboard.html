@@ -17,6 +17,13 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
+
+            {% if dash %}
+                <div class="alert alert-info">
+                    <h2>{{message}}</h2>
+                </div>
+            {% endif %}
+
             {% for event in events %}
                 {% if event.status == 'OPEN' %}
                     <div class="post-preview">

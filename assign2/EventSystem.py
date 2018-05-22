@@ -1,26 +1,44 @@
 from event import User, Event,Seminar,Session,db
 from abc import ABC, abstractmethod
 from datetime import datetime
+from ErrorMessage import ErrorMessage
 
 class Eventsystem(ABC):
 
     def validate_login(zid, password):
+
+        if zid is '' and password is '':
+            raise ErrorMessage('zid and password', None)
+        elif zid is'':
+            raise ErrorMessage('zid',None)
+        elif password is '':
+            raise ErrorMessage('password', None)
+
         for user in User.query.all():
             if user.zid == zid and user.validate_password(password):
                 return user
-        return None
+        raise ErrorMessage('zid and password', 'Please ensure the zid and password')
     
     def check_digital(num):
+
         if num.isdigit():
             return True
         else:
-            return False
+            raise ErrorMessage('number','Please ensure it is')
 
-    def check_data(star, end):
-        if end < star:
-            return False
-        else:
+    def check_data(start, end):
+        date_format = "%d-%m-%Y"
+        start = datetime.strptime(start, date_format)
+        start = start.strftime(date_format)
+
+        end = datetime.strptime(end, date_format)
+        end = end.strftime(date_format)
+
+        if end > start:
             return True
+        else:
+            raise ErrorMessage('start and end date', 'Please ensure the start date is before the end date')
+    
     
     def check_statu():
         now = datetime.now()
@@ -42,6 +60,21 @@ class Eventsystem(ABC):
                 db.session.add(session)
                 db.session.commit()
 
+    def check_in(user, event):
+        if user not in event.events_all.all():
+            return True
+        raise ErrorMessage(None,'You already registe this course')
+
+    def check_userin(user, event):
+        if user in event:
+            return user
+        raise ErrorMessage(None, 'You are not regist this event')
+
+    def check_regist(event, seminar):
+        if len(event) != 0 or len(seminar) != 0:
+            return True
+        raise ErrorMessage(None,'You have not regist any course or seminar!')
+
     def getSeminar(session):
         for seminar in Seminar.query.all():
             if session in seminar.sessions:
@@ -56,8 +89,16 @@ class Eventsystem(ABC):
         return None
     
     def validate_login_guest(username, password):
+
+        if username is '' and password is '':
+            raise ErrorMessage('username and password', None)
+        elif username is'':
+            raise ErrorMessage('username',None)
+        elif password is '':
+            raise ErrorMessage('password', None)
+
         for user in User.query.all():
             if user.name == username and user.validate_password(password):
                 return user
-        return None
+        raise ErrorMessage('username and password', 'Please ensure the user and password')
 

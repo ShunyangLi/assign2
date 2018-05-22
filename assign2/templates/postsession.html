@@ -20,11 +20,12 @@
                 <div class="alert alert-info">
                     <strong style="position: relative">Info! </strong> Before you post, please make sure all required are fill.
                 </div>
-                {% if post %}
+                {% if val_post %}
                     <div class="alert alert-danger">
                         <strong>Warning!</strong> {{post_info}}
                     </div>
                 {% endif %}
+                
                 <form class="sentMessage"  method="POST">
                     <div class="control-group">
                         <div class="form-group floating-label-form-group controls">

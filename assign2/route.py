@@ -1,5 +1,5 @@
 from server import app
-from EventSystem import Eventsystem
+from EventSystem import Eventsystem, ErrorMessage
 from event import User, Event,Seminar,Session,db
 from flask import Flask, render_template, request, url_for, redirect,flash
 from flask_login import current_user, login_required, login_user, logout_user
@@ -35,18 +35,19 @@ def login():
         password = request.form['password']
 
         if Eventsystem.check_digital(zid):
-            if Eventsystem.validate_login(int(zid), password):
-                login_user(Eventsystem.validate_login(int(zid), password))
+            try:
+                user = Eventsystem.validate_login(int(zid), password)
+                login_user(user)
                 return redirect(url_for('index'))
-            else:
-                return render_template('login.html', val = True, message = 'Invalid zid or passsword')
+            except ErrorMessage as error:
+                return render_template('login.html', val = True, message = error.msg)
         else:
-            if Eventsystem.validate_login_guest(zid, password):
-                login_user(Eventsystem.validate_login_guest(zid, password))
+            try:
+                user = Eventsystem.validate_login_guest(zid, password)
+                login_user(user)
                 return redirect(url_for('index'))
-            else:
-                return render_template('login.html', val = True, message = 'Invalid zid or passsword')
-            # return render_template('login.html', val = True, message = 'Please enter zid as an integer')
+            except ErrorMessage as error:
+                return render_template('login.html',val = True, message = error.msg)
     return render_template('login.html')
 
 
@@ -62,16 +63,16 @@ def post():
         detail = request.form['detail']
         status = 'OPEN'
 
-        if Eventsystem.check_data(start,end) and Eventsystem.check_digital(capacity):
+        try:
+            Eventsystem.check_data(start, end)
+            # Eventsystem.check_digital(capacity)
+            # Eventsystem.check_digital(fee)
             event = Event(title,detail,start,end,capacity,status,current_user.name,fee)
             db.session.add(event)
             db.session.commit()
             return redirect(url_for('index'))
-        elif Eventsystem.check_data(start,end) == False:
-            return render_template('post.html', post = True, post_info = 'End date should less than start data!')
-        elif Eventsystem.check_digital(capacity) == False:
-            return render_template('post.html', post = True, post_info = 'Enter capacity as integer!')
-
+        except ErrorMessage as error:
+            return render_template('post.html', val_post = True, post_info = error.msg)
     return render_template('post.html')
 
 @app.route('/info/<eventId>',methods = ['POST','GET'])
@@ -109,6 +110,7 @@ def cance():
 def registercomfirme(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
     user = User.query.filter_by(zid = current_user.zid).one()
+
     if event:
         return render_template('comfirm.html', event = event, user=user)
     else:
@@ -120,13 +122,13 @@ def register(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
     user = User.query.filter_by(zid = current_user.zid).one()
 
-    if user in event.events_all.all():
-        flash('You alreay register this event!')
-    else:
+    try:
+        Eventsystem.check_in(user,event)
         event.users.append(user)
-        # user.events.append(event)
         db.session.commit()
-    return redirect(url_for('index'))
+        return render_template('info.html', event = event)
+    except ErrorMessage as error:
+        return render_template('info.html', event = event, event_in = True, message = error.msg)
 
 @app.route('/dashboard/')
 @login_required
@@ -134,7 +136,12 @@ def dashboard():
     user = User.query.filter_by(zid = current_user.zid).one()
     events = user.event_users_all.all()
     seminars = user.seminar_users_all.all()
-    return render_template('dashboard.html',events=events,seminars=seminars)
+
+    try:
+        Eventsystem.check_regist(events, seminars)
+        return render_template('dashboard.html',events = events, seminars = seminars)
+    except ErrorMessage as error:
+        return render_template('dashboard.html', dash = True, message = error.msg)
 
 @app.route('/user_curr/')
 @login_required
@@ -142,14 +149,12 @@ def user_curr():
     user = User.query.filter_by(zid = current_user.zid).one()
     events = user.event_users_all.all()
     seminars = user.seminar_users_all.all()
-    return render_template('usercurr.html',events=events,seminars=seminars)
 
-# @app.route('/user_info/<eventId>',methods = ['POST','GET'])
-# @login_required
-# def user_info(eventId):
-#     event = Event.query.filter_by(event_id = int(eventId)).one()
-#     return render_template('userinfo.html', event = event)
-
+    try:
+        Eventsystem.check_regist(events, seminars)
+        return render_template('dashboard.html',events = events, seminars = seminars)
+    except ErrorMessage as error:
+        return render_template('dashboard.html', dash = True, message = error.msg)
 
 @app.route('/user_past/',methods = ['POST','GET'])
 @login_required
@@ -165,13 +170,14 @@ def user_past():
 def user_cancele(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
     user = User.query.filter_by(zid = current_user.zid).one()
-    if user in event.users:
+
+    try:
+        user = Eventsystem.check_userin(user, event.users)
         event.users.remove(user)
-        # user.events.remove(event)
         db.session.commit()
-    else:
-        return render_template('userinfo.html',val = True, message = 'deregister', event = event)
-    return render_template('dashboard.html')
+        return render_template('info.html', event = event, cance = True, message = 'Cancele success')
+    except ErrorMessage as error:
+        return render_template('info.html', event = event, canerror = True, message = error.msg)
 
 @app.route('/currpost/',methods = ['POST','GET'])
 @login_required
@@ -206,15 +212,14 @@ def postSeminar():
         detail = request.form['detail']
         status = 'OPEN'
 
-        if Eventsystem.check_data(start,end) and Eventsystem.check_digital(capacity):
+        try:
+            Eventsystem.check_data(start, end)
             seminar = Seminar(title,detail,start,end,capacity,status,current_user.name)
             db.session.add(seminar)
             db.session.commit()
             return redirect(url_for('index'))
-        elif Eventsystem.check_data(start,end) == False:
-            return render_template('postseminar.html', post = True, post_info = 'End date should less than start data!')
-        elif Eventsystem.check_digital(capacity) == False:
-            return render_template('postseminar.html', post = True, post_info = 'Enter capacity as integer!')
+        except ErrorMessage as error:
+            return render_template('postseminar.html', val_post = True, post_info = error.msg)
 
     return render_template('postseminar.html')
 
@@ -229,9 +234,6 @@ def Seminarcancele(SeminarId):
     return redirect(url_for('index'))
 
 
-"""
-这一部分还没写完
-"""
 @app.route('/seminarinfo/<SeminarId>/addsession',methods = ['POST','GET'])
 @login_required
 def addsession(SeminarId):
@@ -245,17 +247,17 @@ def addsession(SeminarId):
         detail = request.form['detail']
         speaker = request.form['speaker']
         status = 'OPEN'
-        if Eventsystem.check_data(start,end) and Eventsystem.check_digital(capacity):
+
+        try:
+            Eventsystem.check_data(start, end)
             session = Session(title,detail,start,end,capacity,status,current_user.name, speaker, fee)
             db.session.add(session)
             db.session.commit()
             seminar.sessions.append(session)
             db.session.commit()
             return redirect(url_for('index'))
-        elif Eventsystem.check_data(start,end) == False:
-            return render_template('postsession.html', post = True, post_info = 'End date should less than start data!')
-        elif Eventsystem.check_digital(capacity) == False:
-            return render_template('postsession.html', post = True, post_info = 'Enter capacity as integer!')
+        except ErrorMessage as error:
+            return render_template('postsession.html', val_post = True, post_info = error.msg)
     return render_template('postsession.html')
 
 @app.route('/sessioninfo/<sessionId>',methods = ['POST','GET'])
@@ -269,6 +271,7 @@ def sessioninfo(sessionId):
 def registsessioncomfirm(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
     user = User.query.filter_by(zid = current_user.zid).one()
+
     if session:
         return render_template('registsessioncomfirm.html', session = session, user = user)
     else:
@@ -299,12 +302,13 @@ def cancelesession(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
     user = User.query.filter_by(zid = current_user.zid).one()
     seminar = Eventsystem.getSeminar(session)
-    
-    if user in session.users:
+
+    try:
+        user = Eventsystem.check_userin(user, session.users)
         session.users.remove(user)
         db.session.commit()
-    else:
-        return 'error'
+    except ErrorMessage as error:
+        return render_template('sessioninfo.html',sessions = session,not_in=True, message = error.msg)
 
     if Eventsystem.getUser(user, seminar):
         pass
@@ -312,7 +316,7 @@ def cancelesession(sessionId):
         seminar.users.remove(user)
         db.session.commit()
 
-    return redirect(url_for('index'))
+    return render_template('sessioninfo.html',sessions = session)
 
 
 @app.route('/Sessioncancele/<sessionId>',methods = ['POST','GET'])
@@ -336,6 +340,5 @@ def participant_session(sessionId):
 def logout():
     logout_user()
     return redirect(url_for('index'))
-
 
 

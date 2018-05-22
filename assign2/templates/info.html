@@ -7,6 +7,24 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="site-heading">
                     <h1>{{ event.title }}</h1>
+
+                    {% if event_in %}
+                        <div class="alert alert-danger">
+                            <strong>Warning</strong>{{message}}
+                        </div>
+                    {% endif %}
+                    
+                    {% if cance %}
+                        <div class="alert alert-success">
+                            <strong>Success! </strong>{{message}}
+                        </div>
+                    {% endif %}
+
+                    {% if canerror %}
+                        <div class="alert alert-danger">
+                            <strong>Warning</strong>{{message}}
+                        </div>
+                    {% endif %}
                     <table class="table table-hover">
                         <tbody>
                             <tr>
