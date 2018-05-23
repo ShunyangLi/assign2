@@ -300,18 +300,6 @@ def registsession(sessionId):
     except ErrorMessage as error:
         return render_template('sessioninfo.html', regist = True, message = error.msg, sessions = session)
 
-    """
-    if user in session.sessions_all.all():
-        flash('You alreay register this event!')
-    else:
-        session.users.append(user)
-        db.session.commit()
-    if user not in seminar.users:
-        seminar.users.append(user)
-        db.session.commit()
-    return redirect(url_for('index'))
-    """
-
 @app.route('/cancelesession/<sessionId>',methods = ['POST','GET'])
 @login_required
 def cancelesession(sessionId):
