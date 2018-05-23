@@ -28,16 +28,47 @@ class Eventsystem():
         raise ErrorMessage('zid and password', 'Please ensure the zid and password')
 
     @staticmethod
+    def remove_all_user(event):
+        if len(event.users) != 0:
+            for user in event.users:
+                event.users.remove(user)
+            db.session.commit()
+
+    @staticmethod
+    def validate_capacity(capacity):
+        if int(capacity) > 0:
+            return True
+        else:
+            raise ErrorMessage(None,'Capacity should greater than zero')
+    
+    @staticmethod
+    def validate_period(start, end, period):
+        start = datetime.strptime(start, "%d-%m-%Y")
+        end = datetime.strptime(end,"%d-%m-%Y")
+        diff = end - start
+
+        if diff.days >= int(period):
+            if int(period) >= 0:
+                return True
+            else:
+                raise ErrorMessage(None,'Early period should greater or equal zero')
+        else:
+            raise ErrorMessage(None, 'Early period should between start and end')
+        
+        
+
+    @staticmethod
     def cal_fee(start, user, event):
         start = datetime.strptime(start, "%d-%m-%Y")
         now = datetime.now()
         diff = now - start
-        
+
         if user.role == 'guest':
             if diff.days <= event.early_period:
                 user.fee = event.fee / 2
             else:
                 user.fee = event.fee
+
     @staticmethod
     def validate_cancele(end):
         end = datetime.strptime(end, "%d-%m-%Y")

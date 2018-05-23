@@ -71,6 +71,8 @@ def post():
         try:
             Eventsystem.check_start(start)
             Eventsystem.check_data(start, end)
+            Eventsystem.validate_capacity(capacity)
+            Eventsystem.validate_period(start,end,early_period)
             event = Event(title,detail,start,end,capacity,status,current_user.name,fee,early_period)
             db.session.add(event)
             db.session.commit()
@@ -98,6 +100,7 @@ def seminarinfo(seminarId):
 @login_required
 def cancele(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
+    Eventsystem.remove_all_user(event)
     event.status = 'CANCELED'
     db.session.add(event)
     db.session.commit()
@@ -221,7 +224,9 @@ def postSeminar():
         status = 'OPEN'
 
         try:
+            Eventsystem.check_start(start)
             Eventsystem.check_data(start, end)
+            Eventsystem.validate_capacity(capacity)
             seminar = Seminar(title,detail,start,end,capacity,status,current_user.name)
             db.session.add(seminar)
             db.session.commit()
@@ -258,7 +263,10 @@ def addsession(SeminarId):
         status = 'OPEN'
 
         try:
+            Eventsystem.check_start(start)
             Eventsystem.check_data(start, end)
+            Eventsystem.validate_capacity(capacity)
+            Eventsystem.validate_period(start,end,early_period)
             session = Session(title,detail,start,end,capacity,status,current_user.name, speaker, fee,early_period)
             db.session.add(session)
             db.session.commit()
