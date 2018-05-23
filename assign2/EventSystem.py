@@ -1,11 +1,18 @@
 import re
 from event import User, Event,Seminar,Session,db
-from abc import ABC, abstractmethod
+# from abc import ABC, abstractmethod
 from datetime import datetime
 from ErrorMessage import ErrorMessage
 
-class Eventsystem(ABC):
+"""
+if we donnot want to use abstractmethod,
+then can try to use staticmethod or staticmethod
+"""
 
+
+class Eventsystem():
+
+    @staticmethod
     def validate_login(zid, password):
 
         if zid is '' and password is '':
@@ -20,17 +27,18 @@ class Eventsystem(ABC):
                 return user
         raise ErrorMessage('zid and password', 'Please ensure the zid and password')
 
+    @staticmethod
     def cal_fee(start, user, event):
         start = datetime.strptime(start, "%d-%m-%Y")
         now = datetime.now()
 
         diff = now - start
-        print(diff.days)
         if diff.days <= event.early_period:
             user.fee = event.fee / 2
         else:
             user.fee = event.fee
 
+    @staticmethod
     def validate_cancele(end):
         end = datetime.strptime(end, "%d-%m-%Y")
         now = datetime.now()
@@ -40,6 +48,7 @@ class Eventsystem(ABC):
         else:
             raise ErrorMessage(None, 'No more than 24 hours, sorry, can not cancele this event')
 
+    @staticmethod
     def check_unique(username):
         user = User.query.filter_by(name = username).first()
         if user == None:
@@ -47,16 +56,19 @@ class Eventsystem(ABC):
         else:
             raise ErrorMessage(None, 'This is username have been used, change another one')
 
+    @staticmethod
     def validateEmail(email):
         if len(email) > 7:
             if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", email) != None:
                 return 1
         raise ErrorMessage(None,'Please enter email type as a username')
 
+    @staticmethod
     def check_digital(num):
         if num.isdigit():
             return True
     
+    @staticmethod
     def get_user(current_user):
         if current_user.role != 'guest':
             user = User.query.filter_by(zid = current_user.zid).one()
@@ -64,6 +76,7 @@ class Eventsystem(ABC):
             user = User.query.filter_by(name = current_user.name).one()
         return user
 
+    @staticmethod
     def check_data(start, end):
         date_format = "%d-%m-%Y"
         start = datetime.strptime(start, date_format)
@@ -75,6 +88,7 @@ class Eventsystem(ABC):
         else:
             raise ErrorMessage('start and end date', 'Please ensure the start date is before the end date')
     
+    @staticmethod
     def check_start(start):
         now = datetime.now()
         start = datetime.strptime(start, "%d-%m-%Y")
@@ -84,6 +98,7 @@ class Eventsystem(ABC):
         else:
             raise ErrorMessage(None, 'Please enter start date before today')
 
+    @staticmethod
     def check_statu():
         now = datetime.now()
         
@@ -106,6 +121,7 @@ class Eventsystem(ABC):
                 db.session.add(session)
                 db.session.commit()
 
+    @staticmethod
     def validateRegistCourse(event):
             
         if event.capacity >= len(event.users) + 1:
@@ -113,6 +129,7 @@ class Eventsystem(ABC):
         else:
             raise ErrorMessage(None, 'This course is full')
     
+    @staticmethod
     def validateRegistSession(session):
         if session.capacity >= len(session.users) + 1:
             print(len(session.users))
@@ -120,52 +137,60 @@ class Eventsystem(ABC):
         else:
             raise ErrorMessage(None, 'This session is full')
     
+    @staticmethod
     def validateRegistSeminar(seminar):
         if seminar.capacity >= len(seminar.users) + 1:
             return True
         else:
             raise ErrorMessage(None, 'This seminar is full')
     
+    @staticmethod
     def validate_Seminar_regist(user, seminar):
         if user not in seminar:
             return True
         else:
             raise ErrorMessage(None, 'You already regist this seminar')
 
+    @staticmethod
     def Validate_Session_regist(user, session):
         if user not in session:
             return True
         else:
             raise ErrorMessage(None, 'You already regist this session')
 
+    @staticmethod
     def check_in(user, event):
         if user not in event.events_all.all():
             return True
         raise ErrorMessage(None,'You already registe this course')
 
+    @staticmethod
     def check_userin(user, event):
         if user in event:
             return user
         raise ErrorMessage(None, 'You are not regist this event')
 
+    @staticmethod
     def check_regist(event, seminar):
         if len(event) != 0 or len(seminar) != 0:
             return True
         raise ErrorMessage(None,'You have not regist any course or seminar!')
 
+    @staticmethod
     def getSeminar(session):
         for seminar in Seminar.query.all():
             if session in seminar.sessions:
                 return seminar
-        
         return None
 
+    @staticmethod
     def getUser(user, seminar):
         for session in seminar.seminar_all.all():       
             if user in session.users:
                 return True
         return None
     
+    @staticmethod
     def validate_login_guest(username, password):
 
         if username is '' and password is '':
