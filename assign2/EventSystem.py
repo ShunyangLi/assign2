@@ -20,6 +20,26 @@ class Eventsystem(ABC):
                 return user
         raise ErrorMessage('zid and password', 'Please ensure the zid and password')
 
+    def cal_fee(start, user, event):
+        start = datetime.strptime(start, "%d-%m-%Y")
+        now = datetime.now()
+
+        diff = now - start
+        print(diff.days)
+        if diff.days <= event.early_period:
+            user.fee = event.fee / 2
+        else:
+            user.fee = event.fee
+
+    def validate_cancele(end):
+        end = datetime.strptime(end, "%d-%m-%Y")
+        now = datetime.now()
+        
+        if now - end >= 1:
+            return True
+        else:
+            raise ErrorMessage(None, 'No more than 24 hours, sorry, can not cancele this event')
+
     def check_unique(username):
         user = User.query.filter_by(name = username).first()
         if user == None:
@@ -47,10 +67,8 @@ class Eventsystem(ABC):
     def check_data(start, end):
         date_format = "%d-%m-%Y"
         start = datetime.strptime(start, date_format)
-        start = start.strftime(date_format)
 
         end = datetime.strptime(end, date_format)
-        end = end.strftime(date_format)
 
         if end > start:
             return True

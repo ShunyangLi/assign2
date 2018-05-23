@@ -32,6 +32,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(120))
     role = db.Column(db.String(80))
+    fee = db.Column(db.Float)
     
     events = db.relationship('Event', secondary = event_realation,
                                 backref=db.backref('events_all', lazy='dynamic'))
@@ -42,12 +43,13 @@ class User(UserMixin, db.Model):
     sessions = db.relationship('Session', secondary = session_realation,
                                 backref=db.backref('sessions_all', lazy='dynamic'))
                                     
-    def __init__(self, name, zid, email, password, role):
+    def __init__(self, name, zid, email, password, role, fee):
         self.name = name
         self.zid = zid
         self.email = email
         self.password = password
         self.role = role
+        self.fee = fee
     
     @property
     def get_zid(self):
@@ -89,12 +91,13 @@ class Event(db.Model):
     status = db.Column(db.String(80))
     creater = db.Column(db.String(80))
     fee = db.Column(db.Integer)
+    early_period = db.Column(db.Integer)
     
     users = db.relationship('User',secondary=event_realation,
                             backref=db.backref('event_users_all', lazy='dynamic'))
     
     
-    def __init__(self,title,details,start,end,capacity,status, creater,fee):
+    def __init__(self,title,details,start,end,capacity,status, creater,fee, early_period):
         self.title = title
         self.details = details
         self.start = start
@@ -103,6 +106,7 @@ class Event(db.Model):
         self.status = status
         self.creater = creater
         self.fee = fee
+        self.early_period = early_period
 
     def __repr__(self):
         return '<Event: %r>'%self.title
@@ -151,6 +155,7 @@ class Session(db.Model):
     creater = db.Column(db.String(80))
     speaker = db.Column(db.String(80))
     fee = db.Column(db.Integer)
+    early_period = db.Column(db.Integer)
 
     users = db.relationship('User',secondary=session_realation,
                         backref=db.backref('session_users_all', lazy='dynamic'))
@@ -158,7 +163,7 @@ class Session(db.Model):
     seminars = db.relationship('Seminar',secondary=seminar_session,
                             backref=db.backref('seminar_all', lazy='dynamic'))
 
-    def __init__(self,title,details,start,end,capacity,status, creater,speaker, fee):
+    def __init__(self,title,details,start,end,capacity,status, creater,speaker, fee, early_period):
         self.title = title
         self.details = details
         self.start = start
@@ -168,6 +173,7 @@ class Session(db.Model):
         self.creater = creater
         self.speaker = speaker
         self.fee = fee
+        self.early_period = early_period
 
     def __repr__(self):
         return '<Seminar: %r>'%self.title

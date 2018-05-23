@@ -23,7 +23,7 @@ def registerguest():
         try:
             Eventsystem.validateEmail(username)
             Eventsystem.check_unique(username)
-            guest = User(username,None ,username,password,'guest')
+            guest = User(username,None ,username,password,'guest',0)
             db.session.add(guest)
             db.session.commit()
             return render_template('successful.html', user = guest)
@@ -66,10 +66,12 @@ def post():
         capacity = request.form['capacity']
         detail = request.form['detail']
         status = 'OPEN'
+        early_period = request.form['early_period']
+
         try:
             Eventsystem.check_start(start)
             Eventsystem.check_data(start, end)
-            event = Event(title,detail,start,end,capacity,status,current_user.name,fee)
+            event = Event(title,detail,start,end,capacity,status,current_user.name,fee,early_period)
             db.session.add(event)
             db.session.commit()
             return redirect(url_for('index'))
@@ -114,8 +116,10 @@ def registercomfirme(eventId):
     user = Eventsystem.get_user(current_user)
 
     if event:
+        Eventsystem.cal_fee(event.start,user,event)
         return render_template('comfirm.html', event = event, user=user)
     else:
+        user.fee = 0
         return 'Not find'
 
 @app.route('/register/<eventId>',methods = ['POST','GET'])
@@ -175,6 +179,7 @@ def user_cancele(eventId):
     user = Eventsystem.get_user(current_user)
 
     try:
+        Eventsystem.validate_cancele(event.end)
         user = Eventsystem.check_userin(user, event.users)
         event.users.remove(user)
         db.session.commit()
@@ -249,11 +254,12 @@ def addsession(SeminarId):
         capacity = request.form['capacity']
         detail = request.form['detail']
         speaker = request.form['speaker']
+        early_period = request.form['early_period']
         status = 'OPEN'
 
         try:
             Eventsystem.check_data(start, end)
-            session = Session(title,detail,start,end,capacity,status,current_user.name, speaker, fee)
+            session = Session(title,detail,start,end,capacity,status,current_user.name, speaker, fee,early_period)
             db.session.add(session)
             db.session.commit()
             seminar.sessions.append(session)
@@ -276,8 +282,10 @@ def registsessioncomfirm(sessionId):
     user = Eventsystem.get_user(current_user)
 
     if session:
+        Eventsystem.cal_fee(session.start,user,session)
         return render_template('registsessioncomfirm.html', session = session, user = user)
     else:
+        user.fee = 0
         return 'Not find'
 
 
@@ -309,6 +317,7 @@ def cancelesession(sessionId):
     seminar = Eventsystem.getSeminar(session)
 
     try:
+        Eventsystem.validate_cancele(session.end)
         user = Eventsystem.check_userin(user, session.users)
         session.users.remove(user)
         db.session.commit()

@@ -17,7 +17,7 @@ with open(filename) as file:
         Role.append(row[4])
         
 for i in range(0, len(Name), 1):
-    u = User(Name[i], Zid[i], Email[i], Password[i], Role[i])
+    u = User(Name[i], Zid[i], Email[i], Password[i], Role[i],0)
     db.session.add(u)
 
 db.session.commit()

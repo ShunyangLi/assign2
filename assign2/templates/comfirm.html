@@ -8,10 +8,13 @@
                 <div class="site-heading">
                     <h1>This is comfirm page</h1>
                     <div class="alert alert-info">
-                        <h2>Welcome {{user.name}}, this is comfirm page</h2>
+                        <h2>Welcome {{user.name}}</h2>
                         <h2>You are going to registe: {{event.title}}</h2>
                         <h2>And it starts at: {{event.start}}</h2>
-                        <h2>And the fee is:${% if user.role == 'guest' %} {{event.fee/2}} {% else %} {{event.fee}} {% endif %} </h2>
+                        
+                        {% if user.role == 'guest' %}
+                            <h2>And the fee is:$ {{user.fee}}  </h2>
+                        {% endif %}
                     </div>
 
                     <button type="submit" class="btn btn-primary" id="sendMessageButton">
