@@ -20,6 +20,12 @@ class Eventsystem(ABC):
                 return user
         raise ErrorMessage('zid and password', 'Please ensure the zid and password')
 
+    def check_unique(username):
+        user = User.query.filter_by(name = username).first()
+        if user == None:
+            return True
+        else:
+            raise ErrorMessage(None, 'This is username have been used, change another one')
 
     def validateEmail(email):
         if len(email) > 7:

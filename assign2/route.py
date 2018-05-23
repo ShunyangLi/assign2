@@ -22,6 +22,7 @@ def registerguest():
 
         try:
             Eventsystem.validateEmail(username)
+            Eventsystem.check_unique(username)
             guest = User(username,None ,username,password,'guest')
             db.session.add(guest)
             db.session.commit()
