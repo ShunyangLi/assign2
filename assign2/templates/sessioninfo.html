@@ -12,6 +12,18 @@
                             <strong>Warning!</strong> {{message}}
                         </div>
                     {% endif %}
+
+                    {% if succ %}
+                        <div class="alert alert-success">
+                            <strong>Success</strong>{{message}}
+                        </div>
+                    {% endif %}
+
+                    {% if regist %}
+                        <div class="alert alert-danger">
+                            <strong>Warning!</strong> {{message}}
+                        </div>
+                    {% endif %}
                     <h1>{{ sessions.title }}</h1>
                     <table class="table table-hover">
                         <tbody>

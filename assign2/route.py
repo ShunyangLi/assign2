@@ -7,6 +7,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 
 @app.route('/')
 def index():
+    Eventsystem.check_statu()
     return render_template('index.html', events = Event.query.all(), seminars = Seminar.query.all())
     
 @app.route('/about')
@@ -64,8 +65,8 @@ def post():
         capacity = request.form['capacity']
         detail = request.form['detail']
         status = 'OPEN'
-
         try:
+            Eventsystem.check_start(start)
             Eventsystem.check_data(start, end)
             event = Event(title,detail,start,end,capacity,status,current_user.name,fee)
             db.session.add(event)
@@ -123,6 +124,7 @@ def register(eventId):
     user = Eventsystem.get_user(current_user)
 
     try:
+        Eventsystem.validateRegistCourse(event)
         Eventsystem.check_in(user,event)
         event.users.append(user)
         db.session.commit()
@@ -285,6 +287,20 @@ def registsession(sessionId):
     user = Eventsystem.get_user(current_user)
     seminar = Eventsystem.getSeminar(session)
 
+    try:
+        Eventsystem.validateRegistSession(session)
+        Eventsystem.validateRegistSeminar(seminar)
+        Eventsystem.Validate_Session_regist(user, session.sessions_all.all())
+        Eventsystem.validate_Seminar_regist(user, seminar.users)
+        session.users.append(user)
+        db.session.commit()
+        seminar.users.append(user)
+        db.session.commit()
+        return render_template('sessioninfo.html', sessions = session, succ = True, message = 'Success regist')
+    except ErrorMessage as error:
+        return render_template('sessioninfo.html', regist = True, message = error.msg, sessions = session)
+
+    """
     if user in session.sessions_all.all():
         flash('You alreay register this event!')
     else:
@@ -294,7 +310,7 @@ def registsession(sessionId):
         seminar.users.append(user)
         db.session.commit()
     return redirect(url_for('index'))
-
+    """
 
 @app.route('/cancelesession/<sessionId>',methods = ['POST','GET'])
 @login_required

@@ -37,6 +37,7 @@ class Eventsystem(ABC):
         else:
             user = User.query.filter_by(name = current_user.name).one()
         return user
+
     def check_data(start, end):
         date_format = "%d-%m-%Y"
         start = datetime.strptime(start, date_format)
@@ -50,26 +51,68 @@ class Eventsystem(ABC):
         else:
             raise ErrorMessage('start and end date', 'Please ensure the start date is before the end date')
     
-    
+    def check_start(start):
+        now = datetime.now()
+        start = datetime.strptime(start, "%d-%m-%Y")
+
+        if start >= now:
+            return True
+        else:
+            raise ErrorMessage(None, 'Please enter start date before today')
+
     def check_statu():
         now = datetime.now()
-        now = now.strftime("%d-%m-%Y")
-
+        
         for event in Event.query.all():
-            if str(event.end) < now or event.capacity >= event.events_all.count():
+            end = datetime.strptime(event.end, "%d-%m-%Y")
+            if end < now:
                 event.status = 'CLOSED'
                 db.session.add(event)
                 db.session.commit()
         for seminar in Seminar.query.all():
-            if str(seminar.end) < now or seminar.capacity >= seminar.seminars_all.count():
+            end = datetime.strptime(seminar.end, "%d-%m-%Y")
+            if end < now:
                 seminar.status = 'CLOSED'
                 db.session.add(seminar)
                 db.session.commit()
         for session in Session.query.all():
-            if str(session.end) < now or session.capacity >= session.sessions_all.count():
+            end = datetime.strptime(session.end, "%d-%m-%Y")
+            if end < now:
                 session.status = 'CLOSED'
                 db.session.add(session)
                 db.session.commit()
+
+    def validateRegistCourse(event):
+            
+        if event.capacity >= len(event.users) + 1:
+            return True
+        else:
+            raise ErrorMessage(None, 'This course is full')
+    
+    def validateRegistSession(session):
+        if session.capacity >= len(session.users) + 1:
+            print(len(session.users))
+            return True
+        else:
+            raise ErrorMessage(None, 'This session is full')
+    
+    def validateRegistSeminar(seminar):
+        if seminar.capacity >= len(seminar.users) + 1:
+            return True
+        else:
+            raise ErrorMessage(None, 'This seminar is full')
+    
+    def validate_Seminar_regist(user, seminar):
+        if user not in seminar:
+            return True
+        else:
+            raise ErrorMessage(None, 'You already regist this seminar')
+
+    def Validate_Session_regist(user, session):
+        if user not in session:
+            return True
+        else:
+            raise ErrorMessage(None, 'You already regist this session')
 
     def check_in(user, event):
         if user not in event.events_all.all():

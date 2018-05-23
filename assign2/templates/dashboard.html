@@ -32,7 +32,7 @@
                                 {{event.title}}
                             </h2>
                         </a>
-                        <p class="post-meta">Post by {{ event.creater }} start at {{ event.start }} Type: course</p>
+                        <p class="post-meta">Type: course Seats left: {{ event.capacity - event.events_all.count() }} Status: {{event.status}}</p>
                     </div>
                     <hr>
                 {% endif %}
@@ -52,7 +52,7 @@
                                 {{seminar.title}}
                             </h2>
                         </a>
-                        <p class="post-meta">Post by {{ seminar.creater }} start at {{ seminar.start }} type: seminar</p>
+                        <p class="post-meta">Type: seminar Seats left: {{ seminar.capacity - seminar.seminars_all.count() }} Status: {{seminar.status}}</p>
                     </div>
                     <hr>
                 {% endif %}
