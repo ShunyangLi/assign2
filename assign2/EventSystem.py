@@ -31,13 +31,13 @@ class Eventsystem():
     def cal_fee(start, user, event):
         start = datetime.strptime(start, "%d-%m-%Y")
         now = datetime.now()
-
         diff = now - start
-        if diff.days <= event.early_period:
-            user.fee = event.fee / 2
-        else:
-            user.fee = event.fee
-
+        
+        if user.role == 'guest':
+            if diff.days <= event.early_period:
+                user.fee = event.fee / 2
+            else:
+                user.fee = event.fee
     @staticmethod
     def validate_cancele(end):
         end = datetime.strptime(end, "%d-%m-%Y")
