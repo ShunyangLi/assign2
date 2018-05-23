@@ -162,9 +162,9 @@ def user_curr():
 
     try:
         Eventsystem.check_regist(events, seminars)
-        return render_template('dashboard.html',events = events, seminars = seminars)
+        return render_template('usercurr.html',events = events, seminars = seminars)
     except ErrorMessage as error:
-        return render_template('dashboard.html', dash = True, message = error.msg)
+        return render_template('usercurr.html', dash = True, message = error.msg)
 
 @app.route('/user_past/',methods = ['POST','GET'])
 @login_required
@@ -172,7 +172,12 @@ def user_past():
     user = Eventsystem.get_user(current_user)
     events = user.event_users_all.all()
     seminars = user.seminar_users_all.all()
-    return render_template('userpast.html', events=events,seminars=seminars)
+
+    try:
+        Eventsystem.check_regist(events, seminars)
+        return render_template('userpass.html',events = events, seminars = seminars)
+    except ErrorMessage as error:
+        return render_template('userpast.html', dash = True, message = error.msg)
 
 
 @app.route('/user_cancele/<eventId>',methods = ['POST','GET'])
@@ -241,6 +246,8 @@ def postSeminar():
 @login_required
 def Seminarcancele(SeminarId):
     seminar = Seminar.query.filter_by(seminar_id = int(SeminarId)).one()
+    Eventsystem.remove_all_user(seminar)
+    Eventsystem.cancele_all_session(seminar)
     seminar.status = 'CANCELED'
     db.session.add(seminar)
     db.session.commit()
@@ -308,11 +315,11 @@ def registsession(sessionId):
         Eventsystem.validateRegistSession(session)
         Eventsystem.validateRegistSeminar(seminar)
         Eventsystem.Validate_Session_regist(user, session.sessions_all.all())
-        Eventsystem.validate_Seminar_regist(user, seminar.users)
         session.users.append(user)
         db.session.commit()
-        seminar.users.append(user)
-        db.session.commit()
+        if Eventsystem.validate_Seminar_regist(user, seminar.users):
+            seminar.users.append(user)
+            db.session.commit()
         return render_template('sessioninfo.html', sessions = session, succ = True, message = 'Success regist')
     except ErrorMessage as error:
         return render_template('sessioninfo.html', regist = True, message = error.msg, sessions = session)
@@ -345,6 +352,10 @@ def cancelesession(sessionId):
 @login_required
 def Sessioncancele(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
+    seminar = Eventsystem.getSeminar(session)
+    # here
+    Eventsystem.remove_session_user(session,seminar)
+    Eventsystem.remove_all_user(session)
     session.status = 'CANCELED'
     db.session.add(session)
     db.session.commit()

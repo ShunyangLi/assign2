@@ -73,8 +73,9 @@ class Eventsystem():
     def validate_cancele(end):
         end = datetime.strptime(end, "%d-%m-%Y")
         now = datetime.now()
-        
-        if now - end >= 1:
+        diff = end - now
+
+        if diff.days >= 1:
             return True
         else:
             raise ErrorMessage(None, 'No more than 24 hours, sorry, can not cancele this event')
@@ -163,7 +164,6 @@ class Eventsystem():
     @staticmethod
     def validateRegistSession(session):
         if session.capacity >= len(session.users) + 1:
-            print(len(session.users))
             return True
         else:
             raise ErrorMessage(None, 'This session is full')
@@ -180,7 +180,7 @@ class Eventsystem():
         if user not in seminar:
             return True
         else:
-            raise ErrorMessage(None, 'You already regist this seminar')
+            return False
 
     @staticmethod
     def Validate_Session_regist(user, session):
@@ -206,6 +206,14 @@ class Eventsystem():
         if len(event) != 0 or len(seminar) != 0:
             return True
         raise ErrorMessage(None,'You have not regist any course or seminar!')
+    
+    @staticmethod
+    def cancele_all_session(seminar):
+        if len(seminar.sessions) != 0:
+            for session in seminar.sessions:
+                session.status = 'CANCELED'
+                db.session.add(session)
+            db.session.commit()
 
     @staticmethod
     def getSeminar(session):
@@ -214,12 +222,24 @@ class Eventsystem():
                 return seminar
         return None
 
+    # here 
+    @staticmethod
+    def remove_session_user(session, seminar):
+        for user in session.users:
+            count = 0
+            for session in seminar.sessions:
+                if user in session.users:
+                    count += 1
+            if  count == 1:
+                seminar.users.remove(user)
+                db.session.commit()
+    
     @staticmethod
     def getUser(user, seminar):
         for session in seminar.seminar_all.all():       
             if user in session.users:
                 return True
-        return None
+        return False
     
     @staticmethod
     def validate_login_guest(username, password):

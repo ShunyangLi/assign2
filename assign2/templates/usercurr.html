@@ -6,8 +6,7 @@
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <h1>Current Event Page</h1>
-                    <span class="subheading"></br>This is All Current Event That You Register</span>
+                    <h1>Current Participate</h1>
                 </div>
             </div>
         </div>
@@ -17,6 +16,13 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
+
+            {% if dash %}
+                <div class="alert alert-info">
+                    <h2>{{message}}</h2>
+                </div>
+            {% endif %}
+
             {% for event in events %}
                 {% if event.status == 'OPEN' %}
                     <div class="post-preview">
@@ -25,7 +31,7 @@
                                 {{event.title}}
                             </h2>
                         </a>
-                        <p class="post-meta">Post by {{ event.creater }} start at {{ event.start }} type: course</p>
+                        <p class="post-meta">Type: course Seats left: {{ event.capacity - event.events_all.count() }} Status: {{event.status}}</p>
                     </div>
                     <hr>
                 {% endif %}
@@ -45,7 +51,7 @@
                                 {{seminar.title}}
                             </h2>
                         </a>
-                        <p class="post-meta">Post by {{ seminar.creater }} start at {{ seminar.start }} type: seminar</p>
+                        <p class="post-meta">Type: seminar Seats left: {{ seminar.capacity - seminar.seminars_all.count() }} Status: {{seminar.status}}</p>
                     </div>
                     <hr>
                 {% endif %}
