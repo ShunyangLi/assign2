@@ -28,6 +28,10 @@
                     <table class="table table-hover">
                         <tbody>
                             <tr>
+                                <td>Status</td>
+                                <td>{{ sessions.status }}</td>
+                            </tr>
+                            <tr>
                                 <td>Start date</td>
                                 <td>{{ sessions.start }}</td>
                             </tr>
@@ -36,16 +40,17 @@
                                 <td>{{ sessions.end }}</td>
                             </tr>
                             <tr>
-                                <td>Status</td>
-                                <td>{{ sessions.status }}</td>
-                            </tr>
-                            <tr>
                                 <td>Capacity</td>
                                 <td>{{ sessions.capacity}}</td>
                             </tr>
                             <tr>
                                 <td>Enrolled</td>
                                 <td>{{sessions.sessions_all.count()}}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Registration fee</td>
+                                <td> {{sessions.fee}} </td>
                             </tr>
                             
                         </tbody>

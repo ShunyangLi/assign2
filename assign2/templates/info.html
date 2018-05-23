@@ -7,7 +7,6 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="site-heading">
                     <h1>{{ event.title }}</h1>
-
                     {% if event_in %}
                         <div class="alert alert-danger">
                             <strong>Warning</strong>{{message}}
@@ -28,6 +27,11 @@
                     <table class="table table-hover">
                         <tbody>
                             <tr>
+                                <td>Status</td>
+                                <td>{{ event.status }}</td>
+                            </tr>
+
+                            <tr>
                                 <td>Start date</td>
                                 <td>{{ event.start }}</td>
                             </tr>
@@ -35,10 +39,7 @@
                                 <td>End date</td>
                                 <td>{{ event.end }}</td>
                             </tr>
-                            <tr>
-                                <td>Status</td>
-                                <td>{{ event.status }}</td>
-                            </tr>
+
                             <tr>
                                 <td>Capacity</td>
                                 <td>{{ event.capacity}}</td>
@@ -46,6 +47,11 @@
                             <tr>
                                 <td>Enrolled</td>
                                 <td>{{event.events_all.count()}}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Registration fee</td>
+                                <td> {{event.fee}} </td>
                             </tr>
                             
                         </tbody>
