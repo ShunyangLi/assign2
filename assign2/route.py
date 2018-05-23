@@ -19,13 +19,15 @@ def registerguest():
         username = request.form['username']
         password = request.form['password']
 
-        """
-        There should have a check emials
-        """
-        guest = User(username,None ,username,password,'guest')
-        db.session.add(guest)
-        db.session.commit()
-        return render_template('successful.html', user = guest)
+        try:
+            Eventsystem.validateEmail(username)
+            guest = User(username,None ,username,password,'guest')
+            db.session.add(guest)
+            db.session.commit()
+            return render_template('successful.html', user = guest)
+        except ErrorMessage as error:
+            return render_template('register.html', re = True, message = error.msg)
+    
     return render_template('register.html')
 
 @app.route('/login/',methods = ['POST','GET'])
@@ -107,7 +109,7 @@ def cance():
 @login_required
 def registercomfirme(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
-    user = User.query.filter_by(zid = current_user.zid).one()
+    user = Eventsystem.get_user(current_user)
 
     if event:
         return render_template('comfirm.html', event = event, user=user)
@@ -118,7 +120,7 @@ def registercomfirme(eventId):
 @login_required
 def register(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
-    user = User.query.filter_by(zid = current_user.zid).one()
+    user = Eventsystem.get_user(current_user)
 
     try:
         Eventsystem.check_in(user,event)
@@ -131,7 +133,7 @@ def register(eventId):
 @app.route('/dashboard/')
 @login_required
 def dashboard():
-    user = User.query.filter_by(zid = current_user.zid).one()
+    user = Eventsystem.get_user(current_user)
     events = user.event_users_all.all()
     seminars = user.seminar_users_all.all()
 
@@ -144,7 +146,7 @@ def dashboard():
 @app.route('/user_curr/')
 @login_required
 def user_curr():
-    user = User.query.filter_by(zid = current_user.zid).one()
+    user = Eventsystem.get_user(current_user)
     events = user.event_users_all.all()
     seminars = user.seminar_users_all.all()
 
@@ -157,7 +159,7 @@ def user_curr():
 @app.route('/user_past/',methods = ['POST','GET'])
 @login_required
 def user_past():
-    user = User.query.filter_by(zid = current_user.zid).one()
+    user = Eventsystem.get_user(current_user)
     events = user.event_users_all.all()
     seminars = user.seminar_users_all.all()
     return render_template('userpast.html', events=events,seminars=seminars)
@@ -167,7 +169,7 @@ def user_past():
 @login_required
 def user_cancele(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
-    user = User.query.filter_by(zid = current_user.zid).one()
+    user = Eventsystem.get_user(current_user)
 
     try:
         user = Eventsystem.check_userin(user, event.users)
@@ -268,7 +270,7 @@ def sessioninfo(sessionId):
 @login_required
 def registsessioncomfirm(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
-    user = User.query.filter_by(zid = current_user.zid).one()
+    user = Eventsystem.get_user(current_user)
 
     if session:
         return render_template('registsessioncomfirm.html', session = session, user = user)
@@ -280,7 +282,7 @@ def registsessioncomfirm(sessionId):
 @login_required
 def registsession(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
-    user = User.query.filter_by(zid = current_user.zid).one()
+    user = Eventsystem.get_user(current_user)
     seminar = Eventsystem.getSeminar(session)
 
     if user in session.sessions_all.all():
@@ -298,7 +300,7 @@ def registsession(sessionId):
 @login_required
 def cancelesession(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
-    user = User.query.filter_by(zid = current_user.zid).one()
+    user = Eventsystem.get_user(current_user)
     seminar = Eventsystem.getSeminar(session)
 
     try:

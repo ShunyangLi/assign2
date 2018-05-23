@@ -1,3 +1,4 @@
+import re
 from event import User, Event,Seminar,Session,db
 from abc import ABC, abstractmethod
 from datetime import datetime
@@ -18,14 +19,24 @@ class Eventsystem(ABC):
             if user.zid == zid and user.validate_password(password):
                 return user
         raise ErrorMessage('zid and password', 'Please ensure the zid and password')
-    
-    def check_digital(num):
 
+
+    def validateEmail(email):
+        if len(email) > 7:
+            if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", email) != None:
+                return 1
+        raise ErrorMessage(None,'Please enter email type as a username')
+
+    def check_digital(num):
         if num.isdigit():
             return True
+    
+    def get_user(current_user):
+        if current_user.role != 'guest':
+            user = User.query.filter_by(zid = current_user.zid).one()
         else:
-            raise ErrorMessage('number','Please ensure it is')
-
+            user = User.query.filter_by(name = current_user.name).one()
+        return user
     def check_data(start, end):
         date_format = "%d-%m-%Y"
         start = datetime.strptime(start, date_format)

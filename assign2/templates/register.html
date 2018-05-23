@@ -13,8 +13,13 @@
                     <form class="sentMessage" method="POST">
                         <div class="control-group">
                             <div class="form-group ">
+                                {% if re %}
+                                    <div class="alert alert-danger">
+                                        <strong>Warning!</strong> {{message}}
+                                    </div>
+                                {% endif %}
                                 <label style="float:left">Username</label>
-                                <input type="text " class="form-control" placeholder="usernmae" name = "username" required data-validation-required-message="Please enter your zid.">
+                                <input type="email " class="form-control" placeholder="Please enter email type" name = "username" required data-validation-required-message="Please enter your username.">
                                 <p class="help-block text-danger"></p>
                             </div>
                         </div>

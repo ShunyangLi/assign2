@@ -30,7 +30,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(80), unique=True)
     zid = db.Column(db.Integer, unique = True)
     email = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(120), unique=True)
+    password = db.Column(db.String(120))
     role = db.Column(db.String(80))
     
     events = db.relationship('Event', secondary = event_realation,
