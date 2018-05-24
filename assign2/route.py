@@ -81,6 +81,7 @@ def post():
             return render_template('post.html', val_post = True, post_info = error.msg)
     return render_template('post.html')
 
+
 @app.route('/info/<eventId>',methods = ['POST','GET'])
 @login_required
 def info(eventId):
@@ -274,6 +275,7 @@ def addsession(SeminarId):
             Eventsystem.check_data(start, end)
             Eventsystem.validate_capacity(capacity)
             Eventsystem.validate_period(start,end,early_period)
+            Eventsystem.check_speaker(speaker)
             session = Session(title,detail,start,end,capacity,status,current_user.name, speaker, fee,early_period)
             db.session.add(session)
             db.session.commit()
@@ -294,10 +296,13 @@ def sessioninfo(sessionId):
 @login_required
 def registsessioncomfirm(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
+    sesminar = Eventsystem.getSeminar(session)
     user = Eventsystem.get_user(current_user)
 
     if session:
         Eventsystem.cal_fee(session.start,user,session)
+        if Eventsystem.guest_speaker(seminar, user):
+            user.fee = 0
         return render_template('registsessioncomfirm.html', session = session, user = user)
     else:
         user.fee = 0
@@ -353,7 +358,6 @@ def cancelesession(sessionId):
 def Sessioncancele(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
     seminar = Eventsystem.getSeminar(session)
-    # here
     Eventsystem.remove_session_user(session,seminar)
     Eventsystem.remove_all_user(session)
     session.status = 'CANCELED'

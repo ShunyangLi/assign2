@@ -222,7 +222,20 @@ class Eventsystem():
                 return seminar
         return None
 
-    # here 
+    @staticmethod
+    def chcek_speaker(speaker):
+        for user in User.query.all():
+            if user.name == speaker:
+                return True
+        raise ErrorMessage(None, 'Speaker should be a user in ems')
+
+    @staticmethod
+    def guest_speaker(seminar, user):
+        for session in seminar.sessions:
+            if session.speaker == user.name:
+                return True
+        return False
+    
     @staticmethod
     def remove_session_user(session, seminar):
         for user in session.users:
