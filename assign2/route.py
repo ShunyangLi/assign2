@@ -273,9 +273,9 @@ def addsession(SeminarId):
         try:
             Eventsystem.check_start(start)
             Eventsystem.check_data(start, end)
-            Eventsystem.validate_capacity(capacity)
+            Eventsystem.validate_capacity(seminar, capacity)
             Eventsystem.validate_period(start,end,early_period)
-            Eventsystem.check_speaker(speaker)
+            Eventsystem.chcek_speaker(speaker)
             session = Session(title,detail,start,end,capacity,status,current_user.name, speaker, fee,early_period)
             db.session.add(session)
             db.session.commit()
@@ -301,7 +301,7 @@ def registsessioncomfirm(sessionId):
 
     if session:
         Eventsystem.cal_fee(session.start,user,session)
-        if Eventsystem.guest_speaker(seminar, user):
+        if Eventsystem.guest_speaker(sesminar, user):
             user.fee = 0
         return render_template('registsessioncomfirm.html', session = session, user = user)
     else:

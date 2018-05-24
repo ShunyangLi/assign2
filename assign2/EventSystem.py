@@ -35,9 +35,12 @@ class Eventsystem():
             db.session.commit()
 
     @staticmethod
-    def validate_capacity(capacity):
+    def validate_capacity(seminar, capacity):
         if int(capacity) > 0:
-            return True
+            if seminar.capacity >= capacity:
+                return True
+            else:
+                raise ErrorMessage(None,'The capactiy should be less than seminar')
         else:
             raise ErrorMessage(None,'Capacity should greater than zero')
     
