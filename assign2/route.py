@@ -232,7 +232,7 @@ def postSeminar():
         try:
             Eventsystem.check_start(start)
             Eventsystem.check_data(start, end)
-            Eventsystem.validate_capacity(capacity)
+            Eventsystem.valida_seminar_capa(capacity)
             seminar = Seminar(title,detail,start,end,capacity,status,current_user.name)
             db.session.add(seminar)
             db.session.commit()
@@ -320,6 +320,7 @@ def registsession(sessionId):
         Eventsystem.validateRegistSession(session)
         Eventsystem.validateRegistSeminar(seminar)
         Eventsystem.Validate_Session_regist(user, session.sessions_all.all())
+        Eventsystem.speakerof_seesion(user,seminar.sessions)
         session.users.append(user)
         db.session.commit()
         if Eventsystem.validate_Seminar_regist(user, seminar.users):

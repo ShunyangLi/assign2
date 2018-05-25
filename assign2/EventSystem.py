@@ -35,9 +35,16 @@ class Eventsystem():
             db.session.commit()
 
     @staticmethod
+    def valida_seminar_capa(capacity):
+        if int(capacity) > 0:
+            return True
+        else:
+            raise ErrorMessage(None,'Capacity should greater than zero')
+
+    @staticmethod
     def validate_capacity(seminar, capacity):
         if int(capacity) > 0:
-            if seminar.capacity >= capacity:
+            if seminar.capacity >= int(capacity):
                 return True
             else:
                 raise ErrorMessage(None,'The capactiy should be less than seminar')
@@ -186,6 +193,14 @@ class Eventsystem():
             return False
 
     @staticmethod
+    def speakerof_seesion(user, session_all):
+        for session in session_all:
+            if session.speaker == user.name:
+                raise ErrorMessage(None,'You are the speaker of this session')
+        
+        return True
+
+    @staticmethod
     def Validate_Session_regist(user, session):
         if user not in session:
             return True
@@ -228,9 +243,10 @@ class Eventsystem():
     @staticmethod
     def chcek_speaker(speaker):
         for user in User.query.all():
-            if user.name == speaker:
-                return True
-        raise ErrorMessage(None, 'Speaker should be a user in ems')
+            if speaker == user.name:
+                if user.role == 'trainer' or user.role == 'guest':
+                    return True
+        raise ErrorMessage(None, 'Speaker should be a user in ems and shoule be trainer or guest')
 
     @staticmethod
     def guest_speaker(seminar, user):
