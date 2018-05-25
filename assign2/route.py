@@ -82,7 +82,7 @@ def post():
         try:
             Eventsystem.check_start(start)
             Eventsystem.check_data(start, end)
-            Eventsystem.validate_capacity(capacity)
+            Eventsystem.valida_seminar_capa(capacity)
             Eventsystem.validate_period(start,end,early_period)
             event = Event(title,detail,start,end,capacity,status,current_user.name,fee,early_period)
             db.session.add(event)
