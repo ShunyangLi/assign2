@@ -34,8 +34,7 @@ def registerguest():
             Eventsystem.validateEmail(username)
             Eventsystem.check_unique(username)
             guest = User(username,None ,username,password,'guest',0)
-            db.session.add(guest)
-            db.session.commit()
+            Eventsystem.add_register(guest)
             return render_template('successful.html', user = guest)
         except ErrorMessage as error:
             return render_template('register.html', re = True, message = error.msg)
@@ -85,8 +84,7 @@ def post():
             Eventsystem.valida_seminar_capa(capacity)
             Eventsystem.validate_period(start,end,early_period)
             event = Event(title,detail,start,end,capacity,status,current_user.name,fee,early_period)
-            db.session.add(event)
-            db.session.commit()
+            Eventsystem.add_course(event)
             return redirect(url_for('index'))
         except ErrorMessage as error:
             return render_template('post.html', val_post = True, post_info = error.msg)
@@ -115,8 +113,7 @@ def cancele(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
     Eventsystem.remove_all_user(event)
     event.status = 'CANCELED'
-    db.session.add(event)
-    db.session.commit()
+    Eventsystem.add_course(event)
     return redirect(url_for('index'))
 
 @app.route('/cance/',methods = ['POST','GET'])
@@ -251,8 +248,7 @@ def postSeminar():
             Eventsystem.check_data(start, end)
             Eventsystem.valida_seminar_capa(capacity)
             seminar = Seminar(title,detail,start,end,capacity,status,current_user.name)
-            db.session.add(seminar)
-            db.session.commit()
+            Eventsystem.add_seminar(seminar)
             return redirect(url_for('index'))
         except ErrorMessage as error:
             return render_template('postseminar.html', val_post = True, post_info = error.msg)
@@ -268,8 +264,7 @@ def Seminarcancele(SeminarId):
     Eventsystem.remove_all_user(seminar)
     Eventsystem.cancele_all_session(seminar)
     seminar.status = 'CANCELED'
-    db.session.add(seminar)
-    db.session.commit()
+    Eventsystem.add_seminar(seminar)
     return redirect(url_for('index'))
 
 
@@ -296,8 +291,7 @@ def addsession(SeminarId):
             Eventsystem.validate_period(start,end,early_period)
             Eventsystem.chcek_speaker(speaker)
             session = Session(title,detail,start,end,capacity,status,current_user.name, speaker, fee,early_period)
-            db.session.add(session)
-            db.session.commit()
+            Eventsystem.add_session(session)
             seminar.sessions.append(session)
             db.session.commit()
             return redirect(url_for('index'))
@@ -382,8 +376,7 @@ def Sessioncancele(sessionId):
     Eventsystem.remove_session_user(session,seminar)
     Eventsystem.remove_all_user(session)
     session.status = 'CANCELED'
-    db.session.add(session)
-    db.session.commit()
+    Eventsystem.add_session(session)
     return redirect(url_for('index'))
 
 @app.route('/sessioninfo/<sessionId>/participant_session/',methods = ['POST','GET'])

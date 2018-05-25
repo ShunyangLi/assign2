@@ -13,6 +13,26 @@ then can try to use staticmethod or staticmethod
 class Eventsystem():
 
     @staticmethod
+    def add_register(guest):
+        db.session.add(guest)
+        db.session.commit()
+    
+    @staticmethod
+    def add_course(course):
+        db.session.add(course)
+        db.session.commit()
+
+    @staticmethod
+    def add_seminar(seminar):
+        db.session.add(seminar)
+        db.session.commit()
+    
+    @staticmethod
+    def add_session(session):
+        db.session.add(session)
+        db.session.commit()
+    
+    @staticmethod
     def validate_login(zid, password):
 
         if zid is '' and password is '':
