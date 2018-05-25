@@ -1,8 +1,18 @@
 from server import app
+from functools import wraps
 from EventSystem import Eventsystem, ErrorMessage
 from event import User, Event,Seminar,Session,db
 from flask import Flask, render_template, request, url_for, redirect,flash
 from flask_login import current_user, login_required, login_user, logout_user
+
+def admin_required(f):
+    """This is used to check the admin status of the user"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user.role != 'trainer':
+            return redirect(url_for('page_not_found'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route('/')
@@ -57,6 +67,7 @@ def login():
 
 @app.route('/post/',methods = ['POST','GET'])
 @login_required
+@admin_required
 def post():
     if request.method == 'POST':
         title = request.form['title']
@@ -99,6 +110,7 @@ def seminarinfo(seminarId):
 
 @app.route('/cancele/<eventId>',methods = ['POST','GET'])
 @login_required
+@admin_required
 def cancele(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
     Eventsystem.remove_all_user(event)
@@ -109,6 +121,7 @@ def cancele(eventId):
 
 @app.route('/cance/',methods = ['POST','GET'])
 @login_required
+@admin_required
 def cance():
     return render_template('canele.html',events = Event.query.all(), seminars = Seminar.query.all())
 
@@ -176,7 +189,7 @@ def user_past():
 
     try:
         Eventsystem.check_regist(events, seminars)
-        return render_template('userpass.html',events = events, seminars = seminars)
+        return render_template('userpast.html',events = events, seminars = seminars)
     except ErrorMessage as error:
         return render_template('userpast.html', dash = True, message = error.msg)
 
@@ -198,6 +211,7 @@ def user_cancele(eventId):
 
 @app.route('/currpost/',methods = ['POST','GET'])
 @login_required
+@admin_required
 def currpost():
     events = Event.query.filter_by(creater = current_user.name).all()
     seminars = Seminar.query.filter_by(creater = current_user.name).all()
@@ -206,6 +220,7 @@ def currpost():
 
 @app.route('/pastpost/',methods = ['POST','GET'])
 @login_required
+@admin_required
 def pastpost():
     events = Event.query.filter_by(creater = current_user.name).all()
     seminars = Seminar.query.filter_by(creater = current_user.name).all()
@@ -214,12 +229,14 @@ def pastpost():
 
 @app.route('/info/<eventId>/participant/',methods = ['POST','GET'])
 @login_required
+@admin_required
 def participant(eventId):
     event = Event.query.filter_by(event_id = int(eventId)).one()
     return render_template('participant.html',user = event.events_all.all())
 
 @app.route('/postSeminar/',methods = ['POST','GET'])
 @login_required
+@admin_required
 def postSeminar():
     if request.method == 'POST':
         title = request.form['title']
@@ -245,6 +262,7 @@ def postSeminar():
 
 @app.route('/Seminarcancele/<SeminarId>',methods = ['POST','GET'])
 @login_required
+@admin_required
 def Seminarcancele(SeminarId):
     seminar = Seminar.query.filter_by(seminar_id = int(SeminarId)).one()
     Eventsystem.remove_all_user(seminar)
@@ -257,6 +275,7 @@ def Seminarcancele(SeminarId):
 
 @app.route('/seminarinfo/<SeminarId>/addsession',methods = ['POST','GET'])
 @login_required
+@admin_required
 def addsession(SeminarId):
     seminar = Seminar.query.filter_by(seminar_id = int(SeminarId)).one()
     if request.method == 'POST':
@@ -356,6 +375,7 @@ def cancelesession(sessionId):
 
 @app.route('/Sessioncancele/<sessionId>',methods = ['POST','GET'])
 @login_required
+@admin_required
 def Sessioncancele(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
     seminar = Eventsystem.getSeminar(session)
@@ -368,10 +388,14 @@ def Sessioncancele(sessionId):
 
 @app.route('/sessioninfo/<sessionId>/participant_session/',methods = ['POST','GET'])
 @login_required
+@admin_required
 def participant_session(sessionId):
     session = Session.query.filter_by(session_id = int(sessionId)).one()
     return render_template('participant_session.html',user = session.sessions_all.all())
 
+@app.route('/404')
+def page_not_found():
+    return render_template('404.html')
 
 @app.route('/logout/')
 @login_required
