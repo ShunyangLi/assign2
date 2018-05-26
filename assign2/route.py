@@ -31,9 +31,7 @@ def registerguest():
         password = request.form['password']
 
         try:
-            Eventsystem.validateEmail(username)
-            Eventsystem.check_unique(username)
-            guest = User(username,None ,username,password,'guest',0)
+            guest = Eventsystem.make_register(username,password)
             Eventsystem.add_register(guest)
             return render_template('successful.html', user = guest)
         except ErrorMessage as error:

@@ -13,6 +13,21 @@ then can try to use staticmethod or staticmethod
 class Eventsystem():
 
     @staticmethod
+    def make_register(username, password):
+        if len(username) > 7:
+            if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", username) != None:
+                user = User.query.filter_by(name = username).first()
+                if user == None:
+                    user = User(username, None, username, password, 'guest', 0)
+                    return user
+                else:
+                    raise ErrorMessage(None, 'This is username have been used, change another one')
+            else:
+                raise ErrorMessage(None,'Please enter email type as a username')
+        else:
+            raise ErrorMessage(None, 'Please enter correct email')
+
+    @staticmethod
     def add_register(guest):
         db.session.add(guest)
         db.session.commit()
@@ -111,21 +126,6 @@ class Eventsystem():
             raise ErrorMessage(None, 'No more than 24 hours, sorry, can not cancele this event')
 
     @staticmethod
-    def check_unique(username):
-        user = User.query.filter_by(name = username).first()
-        if user == None:
-            return True
-        else:
-            raise ErrorMessage(None, 'This is username have been used, change another one')
-
-    @staticmethod
-    def validateEmail(email):
-        if len(email) > 7:
-            if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", email) != None:
-                return 1
-        raise ErrorMessage(None,'Please enter email type as a username')
-
-    @staticmethod
     def check_digital(num):
         if num.isdigit():
             return True
@@ -163,7 +163,7 @@ class Eventsystem():
     @staticmethod
     def check_statu():
         now = datetime.now()
-        
+
         for event in Event.query.all():
             end = datetime.strptime(event.end, "%d-%m-%Y")
             if end < now:
