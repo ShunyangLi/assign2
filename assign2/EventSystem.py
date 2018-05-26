@@ -144,7 +144,7 @@ class Eventsystem():
         start = datetime.strptime(start, date_format)
 
         end = datetime.strptime(end, date_format)
-
+        
         if end > start:
             return True
         else:
@@ -154,7 +154,7 @@ class Eventsystem():
     def check_start(start):
         now = datetime.now()
         start = datetime.strptime(start, "%d-%m-%Y")
-
+        
         if start >= now:
             return True
         else:
@@ -213,11 +213,9 @@ class Eventsystem():
             return False
 
     @staticmethod
-    def speakerof_seesion(user, session_all):
-        for session in session_all:
-            if session.speaker == user.name:
-                raise ErrorMessage(None,'You are the speaker of this session')
-        
+    def speakerof_seesion(user, session):
+        if session.speaker == user.name:
+            raise ErrorMessage(None,'You are the speaker of this session')
         return True
 
     @staticmethod

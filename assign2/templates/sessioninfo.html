@@ -9,19 +9,19 @@
 
                     {% if not_in %}
                         <div class="alert alert-danger">
-                            <strong>Warning!</strong> {{message}}
+                            <strong>Warning! </strong> {{message}}
                         </div>
                     {% endif %}
 
                     {% if succ %}
                         <div class="alert alert-success">
-                            <strong>Success</strong>{{message}}
+                            <strong>Success! </strong>{{message}}
                         </div>
                     {% endif %}
 
                     {% if regist %}
                         <div class="alert alert-danger">
-                            <strong>Warning!</strong> {{message}}
+                            <strong>Warning! </strong> {{message}}
                         </div>
                     {% endif %}
                     <h1>{{ sessions.title }}</h1>
@@ -52,6 +52,11 @@
                                 <td>Registration fee</td>
                                 <td> {{sessions.fee}} </td>
                             </tr>
+                            <tr>
+                                <td>Speaker</td>
+                                <td>{{ sessions.speaker }}</td>
+                            </tr>
+
                             
                         </tbody>
                     </table>

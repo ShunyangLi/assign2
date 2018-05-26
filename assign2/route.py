@@ -319,7 +319,7 @@ def registsessioncomfirm(sessionId):
         return render_template('registsessioncomfirm.html', session = session, user = user)
     else:
         user.fee = 0
-        return 'Not find'
+        return redirect(url_for('page_not_found'))
 
 
 @app.route('/registsession/<sessionId>',methods = ['POST','GET'])
@@ -333,7 +333,7 @@ def registsession(sessionId):
         Eventsystem.validateRegistSession(session)
         Eventsystem.validateRegistSeminar(seminar)
         Eventsystem.Validate_Session_regist(user, session.sessions_all.all())
-        Eventsystem.speakerof_seesion(user,seminar.sessions)
+        Eventsystem.speakerof_seesion(user,session)
         session.users.append(user)
         db.session.commit()
         if Eventsystem.validate_Seminar_regist(user, seminar.users):
