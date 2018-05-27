@@ -1,0 +1,18 @@
+[
+  "test.py::TestLogin::()::test_successful_login",
+  "test.py::TestLogin::()::test_invalid_username",
+  "test.py::TestLogin::()::test_empty_username",
+  "test.py::TestLogin::()::test_empty_password",
+  "test.py::TestLogin::()::test_guest_login",
+  "test.py::TestLogin::()::test_guest_validate_login",
+  "test.py::TestRegister::()::test_validate_username",
+  "test.py::TestRegister::()::test_validate_email",
+  "test.py::TestRegister::()::test_used_username",
+  "test.py::TestCrateCourse::()::test_validate_start",
+  "test.py::TestCrateCourse::()::test_start_end",
+  "test.py::TestCrateCourse::()::test_validate_number",
+  "test.py::Test_create_seminar::()::test_validate_start",
+  "test.py::Test_create_seminar::()::test_start_end",
+  "test.py::Test_create_seminar::()::test_validate_number",
+  "test.py::Test_create_seminar::()::test_post_seminar"
+]

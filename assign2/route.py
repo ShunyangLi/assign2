@@ -81,7 +81,7 @@ def post():
             Eventsystem.check_data(start, end)
             Eventsystem.valida_seminar_capa(capacity)
             Eventsystem.validate_period(start,end,early_period)
-            event = Event(title,detail,start,end,capacity,status,current_user.name,fee,early_period)
+            event = Eventsystem.make_course(title,detail,start,end,capacity,status,current_user.name,fee,early_period)
             Eventsystem.add_course(event)
             return redirect(url_for('index'))
         except ErrorMessage as error:
@@ -245,7 +245,7 @@ def postSeminar():
             Eventsystem.check_start(start)
             Eventsystem.check_data(start, end)
             Eventsystem.valida_seminar_capa(capacity)
-            seminar = Seminar(title,detail,start,end,capacity,status,current_user.name)
+            seminar = Eventsystem.make_seminar(title,detail,start,end,capacity,status,current_user.name)
             Eventsystem.add_seminar(seminar)
             return redirect(url_for('index'))
         except ErrorMessage as error:

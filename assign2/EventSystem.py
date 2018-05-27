@@ -28,6 +28,16 @@ class Eventsystem():
             raise ErrorMessage(None, 'Please enter correct email')
 
     @staticmethod
+    def make_seminar(title,detail,start,end,capacity,status,creater):
+        seminar = Seminar(title, detail, start, end, capacity, status, creater)
+        return seminar
+
+    @staticmethod
+    def make_course(title, detail, start, end, capacity, status, creater, fee, early_period):
+        event = Event(title, detail, start, end, capacity, status, creater, fee, early_period)
+        return event
+
+    @staticmethod
     def add_register(guest):
         db.session.add(guest)
         db.session.commit()
@@ -109,7 +119,7 @@ class Eventsystem():
         diff = now - start
 
         if user.role == 'guest':
-            if diff.days <= event.early_period:
+            if diff.days <= event.early_period and event.early_period != 0:
                 user.fee = event.fee / 2
             else:
                 user.fee = event.fee
@@ -304,5 +314,5 @@ class Eventsystem():
         for user in User.query.all():
             if user.name == username and user.validate_password(password):
                 return user
-        raise ErrorMessage('username and password', 'Please ensure the user and password')
+        raise ErrorMessage('username and password', 'Please ensure the username and password')
 
