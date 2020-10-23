@@ -1,8 +1,0 @@
-{
-  "test.py::TestCrateCourse": true,
-  "test.py::TestGuestRegisterSeminar": true,
-  "test.py::TestLogin": true,
-  "test.py::TestRegister": true,
-  "test.py::TestStudentRegisterSeminar": true,
-  "test.py::Test_create_seminar": true
-}
